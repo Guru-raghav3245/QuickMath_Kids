@@ -296,7 +296,7 @@ Widget build(BuildContext context) {
                     const SizedBox(height: 40),
                     ElevatedButton.icon(
                       iconAlignment: IconAlignment.end,
-                      icon: const Icon(Icons.arrow_forward),
+                      icon: const Icon(Icons.arrow_forward, color: Colors.white),
                       onPressed: () {
                         widget.switchToPracticeScreen(
                             _selectedOperation, _selectedRange, _selectedTimeLimit);

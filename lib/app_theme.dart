@@ -105,7 +105,7 @@ class AppTheme {
         ),
       ),
       iconTheme: IconThemeData(
-        color: onPrimaryColor,
+        color: Colors.white,
         size: 22 * scale,
       ),
       dividerColor: secondaryColor.withOpacity(0.3),
