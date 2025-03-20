@@ -16,7 +16,7 @@ Widget buildTimerCard(String time, BuildContext context) {
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(screenWidth * 0.04), // Scales radius
     ),
-    color: theme.brightness == Brightness.dark ? Colors.white : Colors.black,
+    color: theme.colorScheme.surface, // Lighter background for contrast
     child: Padding(
       padding: EdgeInsets.symmetric(
         vertical: paddingVertical,
@@ -28,9 +28,7 @@ Widget buildTimerCard(String time, BuildContext context) {
             'Time',
             style: TextStyle(
               fontSize: fontSizeTitle,
-              color: theme.brightness == Brightness.dark
-                  ? Colors.black
-                  : Colors.grey[400],
+              color: Colors.white, // White for readability
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -39,9 +37,7 @@ Widget buildTimerCard(String time, BuildContext context) {
             time,
             style: TextStyle(
               fontSize: fontSizeTime,
-              color: theme.brightness == Brightness.dark
-                  ? Colors.blue[300]
-                  : Colors.blue[700],
+              color: theme.colorScheme.primary, // Use primary color for emphasis
               fontWeight: FontWeight.bold,
             ),
           ),

@@ -14,8 +14,8 @@ Widget buildAnswerButton(int answer, VoidCallback onPressed) {
         child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue[700],
-            foregroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.primary, // Use primary color
+            foregroundColor: Colors.white, // White text/icon
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(screenWidth * 0.06), // Scales radius
             ),
@@ -26,6 +26,7 @@ Widget buildAnswerButton(int answer, VoidCallback onPressed) {
             style: TextStyle(
               fontSize: fontSize.clamp(16, 20), // Min 16, max 20
               fontWeight: FontWeight.bold,
+              color: Colors.white, // Ensure text is white
             ),
           ),
         ),

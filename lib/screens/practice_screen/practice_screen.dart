@@ -260,14 +260,15 @@ class _PracticeScreenState extends State<PracticeScreen>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Hint'),
-          content: Text(currentHintMessage),
+          title: const Text('Hint', style: TextStyle(color: Colors.white)),
+          content: Text(currentHintMessage, style: const TextStyle(color: Colors.white)),
+          backgroundColor: Colors.grey[900], // Dark background for dialog
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Close'),
+              child: const Text('Close', style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -280,8 +281,7 @@ class _PracticeScreenState extends State<PracticeScreen>
         MediaQuery.of(context).size.width; // ~360 dp on 1080px, 3x density
 
     return Container(
-      width:
-          screenWidth * 0.12, // ~43 dp (~129 physical px on 3x), much smaller
+      width: screenWidth * 0.12, // ~43 dp (~129 physical px on 3x), much smaller
       height: screenWidth * 0.12, // ~43 dp, keeps it circular
       child: ElevatedButton(
         onPressed: onPressed,
@@ -311,7 +311,7 @@ class _PracticeScreenState extends State<PracticeScreen>
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final theme = AppTheme.getTheme(ref, false, context); // Assume dark mode is managed elsewhere
+        final theme = AppTheme.getTheme(ref, true, context); // Enable dark mode
         int displayTime = widget.sessionTimeLimit != null
             ? (widget.sessionTimeLimit! - _quizTimer.secondsPassed)
             : _quizTimer.secondsPassed;
@@ -323,7 +323,7 @@ class _PracticeScreenState extends State<PracticeScreen>
           return Theme(
             data: theme,
             child: const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
+              body: Center(child: CircularProgressIndicator(color: Colors.white)),
             ),
           );
         }
@@ -332,14 +332,15 @@ class _PracticeScreenState extends State<PracticeScreen>
           data: theme,
           child: Scaffold(
             appBar: AppBar(
-              title: const Text('Practice'),
+              title: const Text('Practice', style: TextStyle(color: Colors.white)),
+              backgroundColor: theme.colorScheme.primary.withOpacity(0.7),
               actions: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton.icon(
                     onPressed: _showQuitDialog,
-                    icon: const Icon(Icons.exit_to_app_rounded),
-                    label: const Text('Quit'),
+                    icon: const Icon(Icons.exit_to_app_rounded, color: Colors.white),
+                    label: const Text('Quit', style: TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: theme.colorScheme.error,
                     ),
@@ -349,8 +350,8 @@ class _PracticeScreenState extends State<PracticeScreen>
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton.icon(
                     onPressed: endQuiz,
-                    icon: const Icon(Icons.assessment),
-                    label: const Text('Results'),
+                    icon: const Icon(Icons.assessment, color: Colors.white),
+                    label: const Text('Results', style: TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                     ),
@@ -360,7 +361,7 @@ class _PracticeScreenState extends State<PracticeScreen>
             ),
             body: SafeArea(
               child: Container(
-                color: theme.scaffoldBackgroundColor,
+                color: Colors.black, // Set background to black
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
@@ -388,11 +389,13 @@ class _PracticeScreenState extends State<PracticeScreen>
                                           style: ElevatedButton.styleFrom(
                                             shape: const CircleBorder(),
                                             elevation: 8,
+                                            backgroundColor: theme.colorScheme.primary,
                                             padding: EdgeInsets.all(screenWidth * 0.1),
                                           ),
                                           child: Icon(
                                             Icons.record_voice_over,
                                             size: screenWidth * 0.1,
+                                            color: Colors.white,
                                           ),
                                         ),
                                         Positioned(
@@ -400,7 +403,7 @@ class _PracticeScreenState extends State<PracticeScreen>
                                           right: 0,
                                           child: IconButton(
                                             onPressed: _showHintDialog,
-                                            icon: const Icon(Icons.lightbulb_outline),
+                                            icon: const Icon(Icons.lightbulb_outline, color: Colors.white),
                                             style: IconButton.styleFrom(
                                               backgroundColor: theme.colorScheme.surface,
                                               shape: const CircleBorder(),
@@ -415,11 +418,11 @@ class _PracticeScreenState extends State<PracticeScreen>
                                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          color: theme.colorScheme.surface,
+                                          color: theme.colorScheme.surface, // Lighter background for contrast
                                           borderRadius: const BorderRadius.all(Radius.circular(20)),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: theme.colorScheme.onSurface.withOpacity(0.2),
+                                              color: Colors.white.withOpacity(0.1), // Subtle shadow for dark mode
                                               spreadRadius: 2,
                                               blurRadius: 5,
                                               offset: const Offset(0, 3),

@@ -12,7 +12,7 @@ Widget buildHintCard(String currentHintMessage, bool isExpanded, VoidCallback on
   double iconSize = screenWidth * 0.06;       // Scales icon size
 
   return Card(
-    color: theme.brightness == Brightness.dark ? Colors.grey[200] : Colors.grey[800],
+    color: theme.colorScheme.surface, // Lighter background for contrast
     elevation: 4,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(screenWidth * 0.04), // Scales radius
@@ -28,9 +28,7 @@ Widget buildHintCard(String currentHintMessage, bool isExpanded, VoidCallback on
               children: [
                 Icon(
                   Icons.lightbulb,
-                  color: theme.brightness == Brightness.dark
-                      ? Colors.amber[400]
-                      : Colors.amber[700],
+                  color: theme.colorScheme.secondary, // Use secondary color for emphasis
                   size: iconSize.clamp(20, 30), // Min 20, max 30
                 ),
                 SizedBox(width: screenWidth * 0.02), // Scales spacing
@@ -38,9 +36,7 @@ Widget buildHintCard(String currentHintMessage, bool isExpanded, VoidCallback on
                   'Hint',
                   style: TextStyle(
                     fontSize: fontSizeTitle.clamp(16, 18), // Min 16, max 18
-                    color: theme.brightness == Brightness.dark
-                        ? Colors.black
-                        : Colors.grey[300],
+                    color: Colors.white, // White for readability
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -56,9 +52,7 @@ Widget buildHintCard(String currentHintMessage, bool isExpanded, VoidCallback on
                   currentHintMessage,
                   style: TextStyle(
                     fontSize: fontSizeHint.clamp(14, 16), // Min 14, max 16
-                    color: theme.brightness == Brightness.dark
-                        ? Colors.black
-                        : Colors.grey[400],
+                    color: Colors.white, // White for readability
                   ),
                   textAlign: TextAlign.center,
                 ),
