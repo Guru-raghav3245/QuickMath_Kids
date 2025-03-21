@@ -10,13 +10,13 @@ import 'package:QuickMath_Kids/screens/practice_screen/helpers/confetti_helper.d
 import 'package:QuickMath_Kids/screens/practice_screen/helpers/answer_option_helper.dart';
 import 'package:QuickMath_Kids/screens/practice_screen/ui/timer_card.dart';
 import 'package:QuickMath_Kids/screens/practice_screen/ui/answer_button.dart';
+import 'package:QuickMath_Kids/screens/practice_screen/ui/pause_button.dart';
 import 'package:QuickMath_Kids/wrong_answer_storing/wrong_answer_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:QuickMath_Kids/app_theme.dart';
 
 class PracticeScreen extends StatefulWidget {
-  final Function(List<String>, List<bool>, int, Operation, String, int?)
-      switchToResultScreen;
+  final Function(List<String>, List<bool>, int, Operation, String, int?) switchToResultScreen;
   final VoidCallback switchToStartScreen;
   final Function(String) triggerTTS;
   final Operation selectedOperation;
@@ -36,8 +36,7 @@ class PracticeScreen extends StatefulWidget {
   _PracticeScreenState createState() => _PracticeScreenState();
 }
 
-class _PracticeScreenState extends State<PracticeScreen>
-    with SingleTickerProviderStateMixin {
+class _PracticeScreenState extends State<PracticeScreen> with SingleTickerProviderStateMixin {
   List<int> numbers = [0, 0, 0];
   List<int> answerOptions = [];
   List<String> answeredQuestions = [];
@@ -47,7 +46,6 @@ class _PracticeScreenState extends State<PracticeScreen>
   bool _isInitialized = false;
 
   int correctAnswer = 0;
-  String resultText = '';
   String currentHintMessage = '';
   bool hasListenedToQuestion = false;
 
@@ -67,15 +65,13 @@ class _PracticeScreenState extends State<PracticeScreen>
     _ttsHelper = TTSHelper(widget.triggerTTS);
     _quizTimer.startTimer((secondsPassed) {
       setState(() {
-        if (widget.sessionTimeLimit != null &&
-            secondsPassed >= widget.sessionTimeLimit!) {
+        if (widget.sessionTimeLimit != null && secondsPassed >= widget.sessionTimeLimit!) {
           endQuiz();
         }
       });
     });
 
-    _controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 600));
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
     _slideAnimation = Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
     _fadeAnimation = Tween<double>(begin: 0, end: 1)
@@ -100,14 +96,16 @@ class _PracticeScreenState extends State<PracticeScreen>
     super.dispose();
   }
 
+  void stopTimer() => _quizTimer.stopTimer();
+  void pauseTimer() => _quizTimer.pauseTimer();
+  void resumeTimer() => _quizTimer.resumeTimer();
+
   Future<void> _loadWrongQuestions() async {
-    List<Map<String, dynamic>> allWrongQuestions =
-        await WrongQuestionsService.getWrongQuestions();
+    List<Map<String, dynamic>> allWrongQuestions = await WrongQuestionsService.getWrongQuestions();
     setState(() {
       _wrongQuestions = allWrongQuestions.where((question) {
         String category = question['category'] ?? '';
-        return category
-            .startsWith(widget.selectedOperation.toString().split('.').last);
+        return category.startsWith(widget.selectedOperation.toString().split('.').last);
       }).toList();
     });
   }
@@ -136,10 +134,6 @@ class _PracticeScreenState extends State<PracticeScreen>
     currentHintMessage = hintManager.getRandomHintMessage();
   }
 
-  void stopTimer() => _quizTimer.stopTimer();
-  void pauseTimer() => _quizTimer.pauseTimer();
-  void resumeTimer() => _quizTimer.resumeTimer();
-
   String formatTime(int seconds) {
     if (widget.sessionTimeLimit == null) {
       final minutes = (seconds / 60).floor();
@@ -155,8 +149,7 @@ class _PracticeScreenState extends State<PracticeScreen>
   }
 
   void regenerateNumbers() {
-    numbers = QuestionGenerator().generateTwoRandomNumbers(
-        widget.selectedOperation, widget.selectedRange);
+    numbers = QuestionGenerator().generateTwoRandomNumbers(widget.selectedOperation, widget.selectedRange);
     correctAnswer = numbers.length > 2 ? numbers[2] : numbers[1];
     answerOptions = generateAnswerOptions(correctAnswer);
   }
@@ -173,17 +166,20 @@ class _PracticeScreenState extends State<PracticeScreen>
       String currentQuestion = _formatQuestionText();
 
       if (!isCorrect) {
-        WrongQuestionsService.saveWrongQuestion(
-          question: currentQuestion,
-          userAnswer: selectedAnswer,
-          correctAnswer: correctAnswer,
-          category:
-              '${widget.selectedOperation.toString().split('.').last} - ${widget.selectedRange}',
-        );
+        bool questionExists = _wrongQuestions.any((q) => q['question'] == currentQuestion);
+        if (questionExists) {
+          WrongQuestionsService.updateWrongQuestion(currentQuestion, correct: false);
+        } else {
+          WrongQuestionsService.saveWrongQuestion(
+            question: currentQuestion,
+            userAnswer: selectedAnswer,
+            correctAnswer: correctAnswer,
+            category: '${widget.selectedOperation.toString().split('.').last} - ${widget.selectedRange}',
+          );
+        }
         _loadWrongQuestions();
       } else if (_usedWrongQuestionThisSession && _wrongQuestions.isNotEmpty) {
-        WrongQuestionsService.updateWrongQuestion(currentQuestion,
-            correct: true);
+        WrongQuestionsService.updateWrongQuestion(currentQuestion, correct: true);
         _wrongQuestions.removeAt(0);
       }
 
@@ -202,10 +198,7 @@ class _PracticeScreenState extends State<PracticeScreen>
 
   List<int> _parseQuestion(String questionText) {
     RegExp regExp = RegExp(r'\d+');
-    return regExp
-        .allMatches(questionText)
-        .map((m) => int.parse(m[0]!))
-        .toList();
+    return regExp.allMatches(questionText).map((m) => int.parse(m[0]!)).toList();
   }
 
   String _formatQuestionText() {
@@ -262,12 +255,10 @@ class _PracticeScreenState extends State<PracticeScreen>
         return AlertDialog(
           title: const Text('Hint', style: TextStyle(color: Colors.white)),
           content: Text(currentHintMessage, style: const TextStyle(color: Colors.white)),
-          backgroundColor: Colors.grey[900], // Dark background for dialog
+          backgroundColor: Colors.grey[900],
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: () => Navigator.pop(context),
               child: const Text('Close', style: TextStyle(color: Colors.white)),
             ),
           ],
@@ -276,48 +267,20 @@ class _PracticeScreenState extends State<PracticeScreen>
     );
   }
 
-  Widget buildPauseButton(VoidCallback onPressed, BuildContext context) {
-    final screenWidth =
-        MediaQuery.of(context).size.width; // ~360 dp on 1080px, 3x density
-
-    return Container(
-      width: screenWidth * 0.12, // ~43 dp (~129 physical px on 3x), much smaller
-      height: screenWidth * 0.12, // ~43 dp, keeps it circular
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          shape: CircleBorder(
-            side: BorderSide(
-              color: Theme.of(context).colorScheme.primary, // Thin border color
-              width: 1.0, // Reduced thickness (default is thicker)
-            ),
-          ),
-          elevation: 4, // Reduced from 8 for a flatter, less "thick" look
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          padding: EdgeInsets.all(
-              screenWidth * 0.02), // ~7 dp padding, tight but balanced
-        ),
-        child: Icon(
-          Icons.pause_circle_filled, // Kept for clarity at smaller size
-          size: screenWidth *
-              0.08, // ~29 dp (~87 physical px), smaller but visible
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final theme = AppTheme.getTheme(ref, true, context); // Enable dark mode
+        final theme = AppTheme.getTheme(ref, true, context);
+        final screenWidth = MediaQuery.of(context).size.width;
+        final scale = screenWidth / 360; // Replicate AppTheme scaling
+        final adjustedScale = screenWidth > 600 ? scale.clamp(0.8, 1.2) : scale;
+        final isTablet = screenWidth > 600;
+
         int displayTime = widget.sessionTimeLimit != null
             ? (widget.sessionTimeLimit! - _quizTimer.secondsPassed)
             : _quizTimer.secondsPassed;
         if (widget.sessionTimeLimit != null && displayTime < 0) displayTime = 0;
-
-        final screenWidth = MediaQuery.of(context).size.width;
 
         if (!_isInitialized) {
           return Theme(
@@ -336,32 +299,28 @@ class _PracticeScreenState extends State<PracticeScreen>
               backgroundColor: theme.colorScheme.primary.withOpacity(0.7),
               actions: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8.0 * adjustedScale),
                   child: ElevatedButton.icon(
                     onPressed: _showQuitDialog,
                     icon: const Icon(Icons.exit_to_app_rounded, color: Colors.white),
                     label: const Text('Quit', style: TextStyle(color: Colors.white)),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: theme.colorScheme.error,
-                    ),
+                    style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.error),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(8.0 * adjustedScale),
                   child: ElevatedButton.icon(
                     onPressed: endQuiz,
                     icon: const Icon(Icons.assessment, color: Colors.white),
                     label: const Text('Results', style: TextStyle(color: Colors.white)),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                    ),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   ),
                 ),
               ],
             ),
             body: SafeArea(
               child: Container(
-                color: Colors.black, // Set background to black
+                color: Colors.black,
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
@@ -369,7 +328,7 @@ class _PracticeScreenState extends State<PracticeScreen>
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16 * adjustedScale),
                         buildTimerCard(formatTime(_quizTimer.secondsPassed), context),
                         Expanded(
                           child: Center(
@@ -390,11 +349,11 @@ class _PracticeScreenState extends State<PracticeScreen>
                                             shape: const CircleBorder(),
                                             elevation: 8,
                                             backgroundColor: theme.colorScheme.primary,
-                                            padding: EdgeInsets.all(screenWidth * 0.1),
+                                            padding: EdgeInsets.all(isTablet ? screenWidth * 0.1 : 40 * adjustedScale),
                                           ),
                                           child: Icon(
                                             Icons.record_voice_over,
-                                            size: screenWidth * 0.1,
+                                            size: isTablet ? screenWidth * 0.1 : 60 * adjustedScale,
                                             color: Colors.white,
                                           ),
                                         ),
@@ -413,23 +372,23 @@ class _PracticeScreenState extends State<PracticeScreen>
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 40),
+                                    SizedBox(height: isTablet ? 40 : 40 * adjustedScale),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                      padding: EdgeInsets.symmetric(horizontal: 16.0 * adjustedScale),
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          color: theme.colorScheme.surface, // Lighter background for contrast
-                                          borderRadius: const BorderRadius.all(Radius.circular(20)),
+                                          color: theme.colorScheme.surface,
+                                          borderRadius: BorderRadius.all(Radius.circular(20 * adjustedScale)),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: Colors.white.withOpacity(0.1), // Subtle shadow for dark mode
+                                              color: Colors.white.withOpacity(0.1),
                                               spreadRadius: 2,
                                               blurRadius: 5,
                                               offset: const Offset(0, 3),
                                             ),
                                           ],
                                         ),
-                                        padding: const EdgeInsets.all(16),
+                                        padding: EdgeInsets.all(16 * adjustedScale),
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
@@ -437,20 +396,26 @@ class _PracticeScreenState extends State<PracticeScreen>
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
                                                 buildAnswerButton(
-                                                    answerOptions[0], () => checkAnswer(answerOptions[0])),
-                                                const SizedBox(width: 20),
+                                                  answerOptions[0],
+                                                  () => checkAnswer(answerOptions[0]),
+                                                ),
+                                                SizedBox(width: isTablet ? 20 : 12 * adjustedScale),
                                                 buildAnswerButton(
-                                                    answerOptions[1], () => checkAnswer(answerOptions[1])),
+                                                  answerOptions[1],
+                                                  () => checkAnswer(answerOptions[1]),
+                                                ),
                                               ],
                                             ),
-                                            const SizedBox(height: 20),
+                                            SizedBox(height: isTablet ? 20 : 12 * adjustedScale),
                                             buildAnswerButton(
-                                                answerOptions[2], () => checkAnswer(answerOptions[2])),
+                                              answerOptions[2],
+                                              () => checkAnswer(answerOptions[2]),
+                                            ),
                                           ],
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(height: 80),
+                                    SizedBox(height: isTablet ? 80 : 40 * adjustedScale),
                                   ],
                                 ),
                               ),
@@ -460,8 +425,8 @@ class _PracticeScreenState extends State<PracticeScreen>
                       ],
                     ),
                     Positioned(
-                      bottom: 24,
-                      right: 16,
+                      bottom: 24 * adjustedScale,
+                      right: 16 * adjustedScale,
                       child: buildPauseButton(_showPauseDialog, context),
                     ),
                   ],
