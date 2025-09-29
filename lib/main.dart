@@ -57,8 +57,8 @@ class MyApp extends ConsumerWidget {
     
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.getTheme(ref, false, context), // Light theme
-      darkTheme: AppTheme.getTheme(ref, true, context), // Dark theme
+      theme: AppTheme.getTheme(ref, false, context),
+      darkTheme: AppTheme.getTheme(ref, true, context),
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
       home: StartScreen(
         isDarkMode: isDarkMode,

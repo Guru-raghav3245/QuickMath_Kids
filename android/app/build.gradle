@@ -1,55 +1,62 @@
 plugins {
     id "com.android.application"
     id "org.jetbrains.kotlin.android"
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
 
 def keystoreProperties = new Properties()
-   def keystorePropertiesFile = rootProject.file('key.properties')
-   if (keystorePropertiesFile.exists()) {
-       keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
 android {
     namespace = "com.guru.oral_app_new"
-    compileSdk = flutter.compileSdkVersion
+    // Google Play compliance: Explicit SDK versions
+    compileSdk = 36
+    // Google Play compliance: Modern NDK for 16KB page support
     ndkVersion = "27.0.12077973"
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-        // Enable core library desugaring
+        // Kotlin compatibility: Update Java version
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
         coreLibraryDesugaringEnabled true
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        // Kotlin compatibility: Update JVM target
+        jvmTarget = '17'
     }
 
     defaultConfig {
         applicationId = "com.guru.oral_app_new"
         minSdkVersion = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        // Google Play compliance: Explicit target SDK
+        targetSdk = 34
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         
-        // Enable multidex support
         multiDexEnabled true
     }
 
     signingConfigs {
-       release {
-           keyAlias keystoreProperties['keyAlias']
-           keyPassword keystoreProperties['keyPassword']
-           storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-           storePassword keystoreProperties['storePassword']
-       }
-   }
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
 
     buildTypes {
         release {
             signingConfig = signingConfigs.release
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.debug
         }
     }
 }
@@ -59,9 +66,8 @@ flutter {
 }
 
 dependencies {
-    // Add core library desugaring dependency
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
-    
-    // Add multidex support
     implementation 'androidx.multidex:multidex:2.0.1'
+    
+    // REMOVED the problematic constraints block
 }

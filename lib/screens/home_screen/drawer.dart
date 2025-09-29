@@ -3,7 +3,6 @@ import 'package:QuickMath_Kids/screens/support_screen.dart';
 import 'package:QuickMath_Kids/screens/settings_screen.dart';
 import 'package:QuickMath_Kids/screens/faq/faq_screen.dart';
 import 'package:QuickMath_Kids/screens/how_to_use_screen.dart';
-import 'package:QuickMath_Kids/screens/notifications_scheduler.dart';
 import 'package:QuickMath_Kids/screens/wrong_answer_screen.dart';
 import 'package:QuickMath_Kids/screens/quiz_history_screen.dart';
 import 'package:QuickMath_Kids/services/billing_service.dart';
@@ -90,14 +89,14 @@ class AppDrawer extends StatelessWidget {
                   isPremium ? const SettingsScreen() : const PurchaseScreen()),
               backgroundColor: theme.colorScheme.surface,
             ),
-            _buildDrawerItem(
+            /*_buildDrawerItem(
               context: context,
               icon: Icons.notifications_none,
               iconColor: Colors.grey,
               title: 'Notifications',
               onTap: () => _navigateTo(context, NotificationDemo()),
               backgroundColor: theme.colorScheme.surface,
-            ),
+            ),*/
             _buildDrawerItem(
               context: context,
               icon: Icons.history,
