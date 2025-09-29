@@ -33,7 +33,7 @@ android {
         applicationId = "com.guru.oral_app_new"
         minSdkVersion = flutter.minSdkVersion
         // Google Play compliance: Explicit target SDK
-        targetSdk = 34
+        targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         
