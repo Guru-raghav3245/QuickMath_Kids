@@ -501,24 +501,6 @@ class _NotificationDemoState extends State<NotificationDemo> {
                           },
                         ),
                   const SizedBox(height: 16),
-                  Center(
-                    child: TextButton.icon(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(
-                        Icons.cancel,
-                        color: theme.colorScheme.onSurface.withOpacity(0.7),
-                      ),
-                      label: Text(
-                        'Not Now',
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color:
-                              theme.colorScheme.onSurface.withOpacity(0.7),
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

@@ -1,3 +1,4 @@
+import 'package:QuickMath_Kids/screens/notifications_scheduler.dart';
 import 'package:flutter/material.dart';
 import 'package:QuickMath_Kids/screens/support_screen.dart';
 import 'package:QuickMath_Kids/screens/settings_screen.dart';
@@ -82,6 +83,14 @@ class AppDrawer extends StatelessWidget {
             ),
             _buildDrawerItem(
               context: context,
+              icon: Icons.notifications_none,
+              iconColor: Colors.grey,
+              title: 'Notifications',
+              onTap: () => _navigateTo(context, NotificationDemo()),
+              backgroundColor: theme.colorScheme.surface,
+            ),
+            _buildDrawerItem(
+              context: context,
               icon: Icons.settings,
               title: 'Settings',
               isPremiumRequired: !isPremium,
@@ -89,14 +98,6 @@ class AppDrawer extends StatelessWidget {
                   isPremium ? const SettingsScreen() : const PurchaseScreen()),
               backgroundColor: theme.colorScheme.surface,
             ),
-            /*_buildDrawerItem(
-              context: context,
-              icon: Icons.notifications_none,
-              iconColor: Colors.grey,
-              title: 'Notifications',
-              onTap: () => _navigateTo(context, NotificationDemo()),
-              backgroundColor: theme.colorScheme.surface,
-            ),*/
             _buildDrawerItem(
               context: context,
               icon: Icons.history,
