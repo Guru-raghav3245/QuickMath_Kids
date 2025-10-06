@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:QuickMath_Kids/screens/home_screen/home_page.dart';
 import 'package:QuickMath_Kids/services/billing_service.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -34,14 +35,16 @@ void main() async {
   final billingService = container.read(billingServiceProvider);
   await billingService.initialize();
   await billingService.restorePurchase();
-  
+
   // Initialize dark mode
   await container.read(darkModeProvider.notifier)._loadPrefs();
-  
-  runApp(UncontrolledProviderScope(
-    container: container,
-    child: const MyApp(),
-  ));
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]).then((_) {
+    runApp(UncontrolledProviderScope(container: container, child: MyApp()));
+  });
 }
 
 class MyApp extends ConsumerWidget {
@@ -54,7 +57,7 @@ class MyApp extends ConsumerWidget {
     });
 
     final isDarkMode = ref.watch(darkModeProvider);
-    
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.getTheme(ref, false, context),
