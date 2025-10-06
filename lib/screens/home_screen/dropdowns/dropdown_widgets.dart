@@ -90,13 +90,13 @@ class OperationDropdown extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             children: [
-              Icon(Icons.tune_rounded, size: 20, color: theme.colorScheme.primary),
+              Icon(Icons.tune_rounded, size: 22, color: theme.colorScheme.primary),
               const SizedBox(width: 12),
               Text(
                 'Select an operation',
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w500,
-                  fontSize: isTablet ? 16 : 14,
+                  fontSize: isTablet ? 18 : 16, // Increased font size
                   color: theme.colorScheme.onSurface.withOpacity(0.7),
                 ),
               ),
@@ -112,12 +112,12 @@ class OperationDropdown extends ConsumerWidget {
           return DropdownMenuItem<Operation>(
             value: operation,
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 4), // Reduced padding
+              padding: const EdgeInsets.symmetric(vertical: 8), // Increased padding
               child: Row(
                 children: [
                   Container(
-                    width: 32, // Slightly smaller
-                    height: 32,
+                    width: 36, // Slightly larger
+                    height: 36,
                     decoration: BoxDecoration(
                       color: difficultyColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
@@ -125,35 +125,35 @@ class OperationDropdown extends ConsumerWidget {
                     ),
                     child: Icon(
                       _getOperationIcon(operation),
-                      size: 16, // Smaller icon
+                      size: 18, // Larger icon
                       color: difficultyColor,
                     ),
                   ),
-                  const SizedBox(width: 10), // Reduced spacing
+                  const SizedBox(width: 12), // Increased spacing
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min, // Important: prevent overflow
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           operationName,
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
-                            fontSize: isTablet ? 14 : 12, // Smaller font
+                            fontSize: isTablet ? 16 : 14, // Increased font size
                             color: theme.colorScheme.onSurface,
-                            height: 1.2, // Tighter line height
+                            height: 1.1, // Tighter line height for larger fonts
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 1), // Minimal spacing
+                        const SizedBox(height: 2), // Minimal spacing
                         Text(
                           difficultyName,
                           style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w400,
-                            fontSize: isTablet ? 11 : 10, // Smaller font
+                            fontWeight: FontWeight.w500,
+                            fontSize: isTablet ? 13 : 12, // Increased font size
                             color: difficultyColor,
-                            height: 1.2, // Tighter line height
+                            height: 1.1,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -163,7 +163,7 @@ class OperationDropdown extends ConsumerWidget {
                   ),
                   const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), // Smaller padding
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), // Increased padding
                     decoration: BoxDecoration(
                       color: difficultyColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(10),
@@ -173,9 +173,9 @@ class OperationDropdown extends ConsumerWidget {
                       operation.name.contains('Intermediate') ? 'Medium' : 'Hard',
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w600,
-                        fontSize: 9, // Smaller font
+                        fontSize: 11, // Increased font size
                         color: difficultyColor,
-                        height: 1.1, // Tighter line height
+                        height: 1.0,
                       ),
                     ),
                   ),
@@ -187,8 +187,8 @@ class OperationDropdown extends ConsumerWidget {
         onChanged: onChanged,
         isExpanded: true,
         buttonStyleData: ButtonStyleData(
-          height: isTablet ? 60 : 50, // Slightly reduced height
-          padding: EdgeInsets.symmetric(horizontal: isTablet ? 20 : 16),
+          height: isTablet ? 65 : 55, // Increased height for larger fonts
+          padding: EdgeInsets.symmetric(horizontal: isTablet ? 24 : 18),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -218,14 +218,14 @@ class OperationDropdown extends ConsumerWidget {
             Icons.arrow_drop_down_rounded,
             color: theme.colorScheme.primary,
           ),
-          iconSize: 24, // Slightly smaller
+          iconSize: 26, // Slightly larger
           iconEnabledColor: theme.colorScheme.primary,
           iconDisabledColor: theme.colorScheme.onSurface.withOpacity(0.3),
         ),
         dropdownStyleData: DropdownStyleData(
-          maxHeight: 400,
+          maxHeight: 420, // Slightly increased for larger items
           width: MediaQuery.of(context).size.width - 80,
-          padding: const EdgeInsets.symmetric(vertical: 6), // Reduced padding
+          padding: const EdgeInsets.symmetric(vertical: 8), // Increased padding
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
             color: theme.colorScheme.surface,
@@ -252,8 +252,8 @@ class OperationDropdown extends ConsumerWidget {
           ),
         ),
         menuItemStyleData: MenuItemStyleData(
-          height: 48, // Reduced height to prevent overflow
-          padding: EdgeInsets.symmetric(horizontal: isTablet ? 16 : 12),
+          height: 56, // Increased height for larger fonts
+          padding: EdgeInsets.symmetric(horizontal: isTablet ? 18 : 14),
         ),
         underline: const SizedBox(),
       ),
@@ -320,14 +320,14 @@ class RangeDropdown extends ConsumerWidget {
       SnackBar(
         content: Row(
           children: [
-            Icon(Icons.workspace_premium_rounded, color: Colors.amber, size: 18),
+            Icon(Icons.workspace_premium_rounded, color: Colors.amber, size: 20),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
                 'Premium feature unlocked with subscription',
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w500,
-                  fontSize: 13,
+                  fontSize: 14, // Increased font size
                   color: Colors.white,
                 ),
               ),
@@ -349,7 +349,7 @@ class RangeDropdown extends ConsumerWidget {
 
   Widget _buildPremiumBadge() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), // Smaller
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), // Increased padding
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.amber.shade400, Colors.orange.shade600],
@@ -368,15 +368,15 @@ class RangeDropdown extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.workspace_premium_rounded, size: 10, color: Colors.white),
-          const SizedBox(width: 2),
+          Icon(Icons.workspace_premium_rounded, size: 12, color: Colors.white), // Larger icon
+          const SizedBox(width: 4),
           Text(
             'Premium',
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w700,
-              fontSize: 8, // Smaller font
+              fontSize: 10, // Increased font size
               color: Colors.white,
-              height: 1.1, // Tighter line height
+              height: 1.0,
             ),
           ),
         ],
@@ -399,13 +399,13 @@ class RangeDropdown extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             children: [
-              Icon(Icons.linear_scale_rounded, size: 18, color: theme.colorScheme.primary),
-              const SizedBox(width: 10),
+              Icon(Icons.linear_scale_rounded, size: 20, color: theme.colorScheme.primary), // Larger icon
+              const SizedBox(width: 12),
               Text(
                 'Select a range',
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w500,
-                  fontSize: isTablet ? 15 : 13,
+                  fontSize: isTablet ? 17 : 15, // Increased font size
                   color: theme.colorScheme.onSurface.withOpacity(0.7),
                 ),
               ),
@@ -420,17 +420,17 @@ class RangeDropdown extends ConsumerWidget {
             value: range,
             enabled: !isLocked,
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 4), // Reduced padding
+              padding: const EdgeInsets.symmetric(vertical: 8), // Increased padding
               child: Row(
                 children: [
                   Container(
-                    width: 30, // Smaller
-                    height: 30,
+                    width: 36, // Larger
+                    height: 36,
                     decoration: BoxDecoration(
                       color: isLocked 
                           ? Colors.grey.withOpacity(0.1)
                           : theme.colorScheme.primary.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(7),
+                      borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: isLocked 
                             ? Colors.grey.withOpacity(0.3)
@@ -439,38 +439,38 @@ class RangeDropdown extends ConsumerWidget {
                     ),
                     child: Icon(
                       isLocked ? Icons.lock_outline : Icons.psychology_outlined,
-                      size: 14, // Smaller icon
+                      size: 18, // Larger icon
                       color: isLocked ? Colors.grey : theme.colorScheme.primary,
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min, // Prevent overflow
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           getRangeDisplayName(range),
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w500,
-                            fontSize: isTablet ? 13 : 11, // Smaller font
+                            fontSize: isTablet ? 15 : 13, // Increased font size
                             color: isLocked
                                 ? theme.colorScheme.onSurface.withOpacity(0.4)
                                 : theme.colorScheme.onSurface,
-                            height: 1.2, // Tighter line height
+                            height: 1.1,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         if (isLocked) ...[
-                          const SizedBox(height: 1),
+                          const SizedBox(height: 2),
                           Text(
                             'Premium feature',
                             style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w400,
-                              fontSize: 9, // Smaller font
+                              fontSize: 11, // Increased font size
                               color: Colors.orange,
-                              height: 1.1, // Tighter line height
+                              height: 1.0,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -495,8 +495,8 @@ class RangeDropdown extends ConsumerWidget {
         },
         isExpanded: true,
         buttonStyleData: ButtonStyleData(
-          height: isTablet ? 60 : 50, // Reduced height
-          padding: EdgeInsets.symmetric(horizontal: isTablet ? 20 : 16),
+          height: isTablet ? 65 : 55, // Increased height
+          padding: EdgeInsets.symmetric(horizontal: isTablet ? 24 : 18),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -526,14 +526,14 @@ class RangeDropdown extends ConsumerWidget {
             Icons.arrow_drop_down_rounded,
             color: theme.colorScheme.primary,
           ),
-          iconSize: 24,
+          iconSize: 26,
           iconEnabledColor: theme.colorScheme.primary,
           iconDisabledColor: theme.colorScheme.onSurface.withOpacity(0.3),
         ),
         dropdownStyleData: DropdownStyleData(
-          maxHeight: 380,
+          maxHeight: 420,
           width: MediaQuery.of(context).size.width - 80,
-          padding: const EdgeInsets.symmetric(vertical: 6),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
             color: theme.colorScheme.surface,
@@ -560,8 +560,8 @@ class RangeDropdown extends ConsumerWidget {
           ),
         ),
         menuItemStyleData: MenuItemStyleData(
-          height: 46, // Reduced height
-          padding: EdgeInsets.symmetric(horizontal: isTablet ? 16 : 12),
+          height: 56, // Increased height
+          padding: EdgeInsets.symmetric(horizontal: isTablet ? 18 : 14),
         ),
         underline: const SizedBox(),
       ),
