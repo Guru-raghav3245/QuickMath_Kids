@@ -69,11 +69,20 @@ class _TimeWheelPickerState extends State<TimeWheelPicker> {
     return Container(
       height: 340,
       padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+      ),
       child: Column(
         children: [
           Text(
             'Set Time Limit',
-            style: theme.textTheme.titleLarge,
+            style: theme.textTheme.titleLarge?.copyWith(
+              color: theme.colorScheme.onSurface,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -82,7 +91,9 @@ class _TimeWheelPickerState extends State<TimeWheelPicker> {
                 : 'Free users are limited to 2 minutes. Upgrade to Premium for more options!',
             style: TextStyle(
               fontSize: 14,
-              color: widget.isPremium ? Colors.black : Colors.red,
+              color: widget.isPremium 
+                  ? theme.colorScheme.onSurface.withOpacity(0.7)
+                  : theme.colorScheme.error,
               fontStyle: widget.isPremium ? FontStyle.normal : FontStyle.italic,
             ),
             textAlign: TextAlign.center,
@@ -118,13 +129,19 @@ class _TimeWheelPickerState extends State<TimeWheelPicker> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8, horizontal: 16),
-                        color: isSelected ? Colors.blue.withOpacity(0.2) : null,
+                        decoration: BoxDecoration(
+                          color: isSelected 
+                              ? theme.colorScheme.primary.withOpacity(0.2)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             if (isLocked) ...[
-                              const Icon(Icons.lock,
-                                  size: 16, color: Colors.grey),
+                              Icon(Icons.lock,
+                                  size: 16, 
+                                  color: theme.colorScheme.onSurface.withOpacity(0.5)),
                               const SizedBox(width: 8),
                             ],
                             Text(
@@ -132,10 +149,10 @@ class _TimeWheelPickerState extends State<TimeWheelPicker> {
                               style: TextStyle(
                                 fontSize: 20,
                                 color: isLocked
-                                    ? Colors.grey
+                                    ? theme.colorScheme.onSurface.withOpacity(0.5)
                                     : isSelected
-                                        ? Colors.blue
-                                        : Colors.black,
+                                        ? theme.colorScheme.primary
+                                        : theme.colorScheme.onSurface,
                                 fontWeight: isSelected
                                     ? FontWeight.bold
                                     : FontWeight.normal,
@@ -145,13 +162,23 @@ class _TimeWheelPickerState extends State<TimeWheelPicker> {
                               const SizedBox(width: 8),
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 4, vertical: 2),
-                                color: Colors.amber,
-                                child: const Text(
+                                    horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.amber.shade400,
+                                      Colors.orange.shade600,
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
                                   'Premium',
                                   style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black,
+                                    fontSize: 10,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -167,62 +194,83 @@ class _TimeWheelPickerState extends State<TimeWheelPicker> {
             ),
           ),
           const Spacer(),
-          ElevatedButton(
-            onPressed: () {
-              _startInactivityTimer(); // Reset timer on button press
-              if (!widget.isPremium && _selectedIndex != freeTierDefaultIndex) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Row(
-                      children: [
-                        Icon(
-                          Icons.info,
-                          color: theme.colorScheme.onError,
-                          size: 24,
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            'Custom time limits are a Premium feature. Upgrade to unlock!',
-                            style: TextStyle(
-                              color: theme.colorScheme.onError,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    backgroundColor: theme.colorScheme.error,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    margin: const EdgeInsets.all(16),
-                    elevation: 6,
-                    duration: const Duration(seconds: 5),
-                    action: SnackBarAction(
-                      label: 'Upgrade',
-                      textColor: Colors.white,
-                      backgroundColor: theme.colorScheme.primary,
-                      onPressed: () {
-                        _startInactivityTimer(); // Reset timer on action press
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const PurchaseScreen(),
-                          ),
-                        );
-                      },
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () {
+                    _startInactivityTimer();
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
-                );
-                return;
-              }
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    _startInactivityTimer(); // Reset timer on button press
+                    if (!widget.isPremium && _selectedIndex != freeTierDefaultIndex) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Row(
+                            children: [
+                              Icon(
+                                Icons.info,
+                                color: theme.colorScheme.onError,
+                                size: 24,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Custom time limits are a Premium feature. Upgrade to unlock!',
+                                  style: TextStyle(
+                                    color: theme.colorScheme.onError,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          backgroundColor: theme.colorScheme.error,
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          margin: const EdgeInsets.all(16),
+                          elevation: 6,
+                          duration: const Duration(seconds: 5),
+                          action: SnackBarAction(
+                            label: 'Upgrade',
+                            textColor: Colors.white,
+                            backgroundColor: theme.colorScheme.primary,
+                            onPressed: () {
+                              _startInactivityTimer(); // Reset timer on action press
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const PurchaseScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                      return;
+                    }
 
-              widget.onConfirm(_selectedIndex);
-              Navigator.pop(context);
-            },
-            child: const Text('Confirm'),
+                    widget.onConfirm(_selectedIndex);
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Confirm'),
+                ),
+              ),
+            ],
           ),
         ],
       ),
