@@ -86,8 +86,13 @@ class BillingService extends ChangeNotifier {
   }
 
   Future<void> _loadCachedStatus() async {
-    String? localPremium = await _storage.read(key: _premiumKey);
-    String? localReset = await _storage.read(key: _resetKey);
+    final results = await Future.wait([
+      _storage.read(key: _premiumKey),
+      _storage.read(key: _resetKey),
+    ]);
+    String? localPremium = results[0];
+    String? localReset = results[1];
+
     _isReset = localReset == 'true';
 
     if (_isReset) {

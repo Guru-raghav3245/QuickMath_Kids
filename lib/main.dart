@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'app_theme.dart';
+import 'package:QuickMath_Kids/services/billing_service.dart';
 
 final darkModeProvider = StateNotifierProvider<DarkModeNotifier, bool>((ref) {
   return DarkModeNotifier();
@@ -31,6 +32,18 @@ class DarkModeNotifier extends StateNotifier<bool> {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final container = ProviderContainer();
+
+  // Pre-initialize BillingService to start loading cached status immediately
+  // This helps reduce the loading time on the splash screen
+  container.read(billingServiceProvider);
+
+  // Initialization moved to SplashScreen
+  // await billingService.initialize();
+  // await billingService.restorePurchase(); // Already removed
+
+  // Initialize dark mode
+  // await container.read(darkModeProvider.notifier)._loadPrefs();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
