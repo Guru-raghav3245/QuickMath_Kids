@@ -1,6 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:QuickMath_Kids/services/billing_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+final darkModeProvider = StateNotifierProvider<DarkModeNotifier, bool>((ref) {
+  return DarkModeNotifier();
+});
+
+class DarkModeNotifier extends StateNotifier<bool> {
+  DarkModeNotifier() : super(false) {
+    _loadPrefs();
+  }
+
+  Future<void> _loadPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    state = prefs.getBool('isDarkMode') ?? false;
+  }
+
+  Future<void> toggleDarkMode(bool value) async {
+    state = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDarkMode', value);
+  }
+}
 
 class AppTheme {
   static double _scaleFactor(BuildContext context) {

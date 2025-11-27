@@ -8,8 +8,6 @@ import 'package:QuickMath_Kids/screens/home_screen/home_page.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:QuickMath_Kids/main.dart'; // Import for darkModeProvider
 
 class ResultScreen extends StatefulWidget {
   final String? title;
@@ -367,19 +365,7 @@ class _ResultScreenState extends State<ResultScreen>
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Consumer(
-                            builder: (context, ref, child) {
-                              final isDarkMode = ref.watch(darkModeProvider);
-                              return StartScreen(
-                                isDarkMode: isDarkMode,
-                                toggleDarkMode: (value) {
-                                  ref
-                                      .read(darkModeProvider.notifier)
-                                      .toggleDarkMode(value);
-                                },
-                              );
-                            },
-                          ),
+                          builder: (context) => const StartScreen(),
                         ),
                         (route) => false,
                       );

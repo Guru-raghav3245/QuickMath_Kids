@@ -9,24 +9,21 @@ import 'package:QuickMath_Kids/screens/quiz_history_screen.dart';
 import 'package:QuickMath_Kids/services/billing_service.dart';
 import 'package:QuickMath_Kids/screens/purchase_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:QuickMath_Kids/main.dart';
+import 'package:QuickMath_Kids/app_theme.dart';
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends ConsumerWidget {
   final BillingService billingService;
-  final bool isDarkMode;
-  final Function(bool) toggleDarkMode;
 
   const AppDrawer({
     required this.billingService,
-    required this.isDarkMode,
-    required this.toggleDarkMode,
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isPremium = billingService.isPremium;
+    final isDarkMode = ref.watch(darkModeProvider);
 
     return Drawer(
       width: MediaQuery.of(context).size.width * 0.75,
@@ -72,6 +69,7 @@ class AppDrawer extends StatelessWidget {
               title: 'FAQ',
               onTap: () => _navigateTo(context, FAQScreen()),
               backgroundColor: theme.colorScheme.surface,
+              isDarkMode: isDarkMode,
             ),
             _buildDrawerItem(
               context: context,
@@ -80,6 +78,7 @@ class AppDrawer extends StatelessWidget {
               title: 'How to use?',
               onTap: () => _navigateTo(context, HowToUseScreen()),
               backgroundColor: theme.colorScheme.surface,
+              isDarkMode: isDarkMode,
             ),
             _buildDrawerItem(
               context: context,
@@ -88,6 +87,7 @@ class AppDrawer extends StatelessWidget {
               title: 'Notifications',
               onTap: () => _navigateTo(context, NotificationDemo()),
               backgroundColor: theme.colorScheme.surface,
+              isDarkMode: isDarkMode,
             ),
             _buildDrawerItem(
               context: context,
@@ -97,6 +97,7 @@ class AppDrawer extends StatelessWidget {
               onTap: () => _navigateTo(context,
                   isPremium ? const SettingsScreen() : const PurchaseScreen()),
               backgroundColor: theme.colorScheme.surface,
+              isDarkMode: isDarkMode,
             ),
             _buildDrawerItem(
               context: context,
@@ -106,6 +107,7 @@ class AppDrawer extends StatelessWidget {
               onTap: () => _navigateTo(context,
                   isPremium ? WrongAnswersScreen() : const PurchaseScreen()),
               backgroundColor: theme.colorScheme.surface,
+              isDarkMode: isDarkMode,
             ),
             _buildDrawerItem(
               context: context,
@@ -115,6 +117,7 @@ class AppDrawer extends StatelessWidget {
               onTap: () => _navigateTo(context,
                   isPremium ? QuizHistoryScreen() : const PurchaseScreen()),
               backgroundColor: theme.colorScheme.surface,
+              isDarkMode: isDarkMode,
             ),
             _buildDrawerItem(
               context: context,
@@ -125,6 +128,7 @@ class AppDrawer extends StatelessWidget {
               iconColor: theme.colorScheme.error,
               textStyle: const TextStyle(fontWeight: FontWeight.bold),
               borderColor: theme.colorScheme.error,
+              isDarkMode: isDarkMode,
             ),
             _buildDrawerItem(
               context: context,
@@ -143,6 +147,7 @@ class AppDrawer extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
+              isDarkMode: isDarkMode,
             ),
             // In the SwitchListTile part, update to:
             Padding(
@@ -192,6 +197,7 @@ class AppDrawer extends StatelessWidget {
     Color? backgroundColor,
     Color? iconColor,
     Color? borderColor,
+    required bool isDarkMode,
     TextStyle? textStyle,
     Gradient? gradient,
   }) {

@@ -16,12 +16,7 @@ import 'package:QuickMath_Kids/screens/purchase_screen.dart';
 import 'package:flutter/foundation.dart';
 
 class StartScreen extends ConsumerStatefulWidget {
-  final bool isDarkMode;
-  final Function(bool) toggleDarkMode;
-
   const StartScreen({
-    required this.isDarkMode,
-    required this.toggleDarkMode,
     super.key,
   });
 
@@ -422,7 +417,8 @@ class _StartScreenState extends ConsumerState<StartScreen> {
     if (!billingService.isInitialized) {
       return Consumer(
         builder: (context, ref, child) {
-          final theme = AppTheme.getTheme(ref, widget.isDarkMode, context);
+          final isDarkMode = ref.watch(darkModeProvider);
+          final theme = AppTheme.getTheme(ref, isDarkMode, context);
           return Theme(
             data: theme,
             child: const Scaffold(
@@ -435,7 +431,8 @@ class _StartScreenState extends ConsumerState<StartScreen> {
 
     return Consumer(
       builder: (context, ref, child) {
-        final theme = AppTheme.getTheme(ref, widget.isDarkMode, context);
+        final isDarkMode = ref.watch(darkModeProvider);
+        final theme = AppTheme.getTheme(ref, isDarkMode, context);
         return Theme(
           data: theme,
           child: Scaffold(
@@ -455,8 +452,6 @@ class _StartScreenState extends ConsumerState<StartScreen> {
                 final billingService = ref.watch(billingServiceProvider);
                 return AppDrawer(
                   billingService: billingService,
-                  isDarkMode: widget.isDarkMode,
-                  toggleDarkMode: widget.toggleDarkMode,
                 );
               },
             ),
@@ -643,7 +638,6 @@ class _StartScreenState extends ConsumerState<StartScreen> {
                                     sessionTimeLimit: _selectedTimeLimit,
                                     triggerTTS: (text, ref) =>
                                         TTSService().speak(text, ref),
-                                    isDarkMode: widget.isDarkMode,
                                   ),
                                 ),
                               );

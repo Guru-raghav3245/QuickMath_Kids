@@ -21,11 +21,9 @@ import 'package:QuickMath_Kids/services/billing_service.dart';
 import 'package:QuickMath_Kids/screens/settings_screen.dart';
 import 'package:QuickMath_Kids/screens/result_screen/result_screen.dart';
 import 'package:QuickMath_Kids/screens/home_screen/home_page.dart';
-import 'package:QuickMath_Kids/main.dart'; // Import for darkModeProvider
 
 class PracticeScreen extends StatefulWidget {
   final Function(String, WidgetRef) triggerTTS;
-  final bool isDarkMode;
   final Operation selectedOperation;
   final Range selectedRange;
   final int? sessionTimeLimit;
@@ -35,7 +33,6 @@ class PracticeScreen extends StatefulWidget {
     required this.selectedRange,
     this.sessionTimeLimit,
     required this.triggerTTS,
-    required this.isDarkMode,
     super.key,
   });
 
@@ -460,14 +457,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 builder: (context) => Consumer(
                   builder: (context, ref, child) {
                     final isDarkMode = ref.watch(darkModeProvider);
-                    return StartScreen(
-                      isDarkMode: isDarkMode,
-                      toggleDarkMode: (value) {
-                        ref
-                            .read(darkModeProvider.notifier)
-                            .toggleDarkMode(value);
-                      },
-                    );
+                    return const StartScreen();
                   },
                 ),
               ),
@@ -530,7 +520,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final theme = AppTheme.getTheme(ref, widget.isDarkMode, context);
+        final isDarkMode = ref.watch(darkModeProvider);
+        final theme = AppTheme.getTheme(ref, isDarkMode, context);
         final screenWidth = MediaQuery.of(context).size.width;
         final scale = screenWidth / 360;
         final adjustedScale = screenWidth > 600 ? scale.clamp(0.8, 1.2) : scale;
@@ -703,7 +694,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                           Radius.circular(20 * adjustedScale)),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: widget.isDarkMode
+                                          color: isDarkMode
                                               ? Colors.black.withOpacity(0.3)
                                               : Colors.grey.withOpacity(0.3),
                                           spreadRadius: 2,
@@ -774,7 +765,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                       BorderRadius.circular(30 * adjustedScale),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: widget.isDarkMode
+                                      color: isDarkMode
                                           ? Colors.black.withOpacity(0.2)
                                           : Colors.grey.withOpacity(0.2),
                                       spreadRadius: 1,
