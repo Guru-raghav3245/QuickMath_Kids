@@ -2,16 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:QuickMath_Kids/screens/home_screen/home_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
+
 import 'app_theme.dart';
 import 'package:QuickMath_Kids/services/billing_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Preserve the native splash screen
-  FlutterNativeSplash.preserve(
-      widgetsBinding: WidgetsFlutterBinding.ensureInitialized());
 
   final container = ProviderContainer();
 
@@ -153,11 +149,6 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Remove the native splash screen immediately when Flutter is ready
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      FlutterNativeSplash.remove();
-    });
-
     final isDarkMode = ref.watch(darkModeProvider);
 
     return MaterialApp(

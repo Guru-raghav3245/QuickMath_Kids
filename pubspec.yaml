@@ -2,7 +2,7 @@ name: QuickMath_Kids
 description: ""
 publish_to: 'none'
 
-version: 3.2.2+20
+version: 3.2.3+21
 
 environment:
   sdk: ^3.5.2
@@ -37,10 +37,3 @@ flutter:
   assets:
     - assets/QuickMath_Kids_logo.png
   uses-material-design: true
-
-flutter_native_splash:
-  color: "#FFFFFF" # White background for light mode
-  image: assets/QuickMath_Kids_Logo.png
-  color_dark: "#000000" # Black background for dark mode
-  image_dark: assets/QuickMath_Kids_Logo.png
-  fullscreen: true
