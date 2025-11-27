@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:QuickMath_Kids/screens/home_screen/home_page.dart';
-import 'package:QuickMath_Kids/services/billing_service.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,13 +31,6 @@ class DarkModeNotifier extends StateNotifier<bool> {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final container = ProviderContainer();
-  final billingService = container.read(billingServiceProvider);
-  await billingService.initialize();
-  await billingService.restorePurchase();
-
-  // Initialize dark mode
-  await container.read(darkModeProvider.notifier)._loadPrefs();
-
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

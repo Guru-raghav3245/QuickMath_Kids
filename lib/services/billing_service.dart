@@ -7,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final billingServiceProvider = ChangeNotifierProvider<BillingService>((ref) {
   final billingService = BillingService();
+  billingService.initialize();
   ref.onDispose(() => billingService.dispose());
   return billingService;
 });
@@ -33,11 +34,25 @@ class BillingService extends ChangeNotifier {
   Future<void> initialize() async {
     if (_isInitialized) return;
 
-    if (!Platform.isAndroid) {
-      debugPrint('BillingService: This app only supports Android billing.');
+    try {
+      // 1. Load cached status immediately (FAST)
+      await _loadCachedStatus();
+    } catch (e) {
+      debugPrint('BillingService: Error loading cached status: $e');
       _isPremium = false;
+    } finally {
       _isInitialized = true;
       notifyListeners();
+    }
+
+    // 2. Perform network checks in background (SLOW)
+    // We do not await this, so the app startup is not blocked.
+    _performBackgroundVerification();
+  }
+
+  Future<void> _performBackgroundVerification() async {
+    if (!Platform.isAndroid) {
+      debugPrint('BillingService: This app only supports Android billing.');
       return;
     }
 
@@ -46,17 +61,12 @@ class BillingService extends ChangeNotifier {
       available = await _iap.isAvailable();
     } catch (e) {
       debugPrint('BillingService: Error checking billing availability: $e');
-      _isPremium = false;
-      _isInitialized = true;
-      notifyListeners();
       return;
     }
 
     if (!available) {
-      debugPrint('BillingService: In-app purchase not available on this device');
-      _isPremium = false;
-      _isInitialized = true;
-      notifyListeners();
+      debugPrint(
+          'BillingService: In-app purchase not available on this device');
       return;
     }
 
@@ -71,17 +81,32 @@ class BillingService extends ChangeNotifier {
       },
     );
 
-    await _loadPremiumStatus();
-    _isInitialized = true;
-    notifyListeners();
+    // Verify actual purchase status with store
+    await _verifyPurchaseStatus();
   }
 
-  Future<void> _loadPremiumStatus() async {
+  Future<void> _loadCachedStatus() async {
     String? localPremium = await _storage.read(key: _premiumKey);
     String? localReset = await _storage.read(key: _resetKey);
     _isReset = localReset == 'true';
 
     if (_isReset) {
+      _isPremium = false;
+    } else {
+      _isPremium = localPremium == 'true';
+    }
+    debugPrint('BillingService: Loaded cached premium status: $_isPremium');
+  }
+
+  Future<void> _verifyPurchaseStatus() async {
+    String? localPremium = await _storage.read(key: _premiumKey);
+    // _isReset is already loaded by _loadCachedStatus, but we re-read or use state
+    // For safety in this background check, let's re-read or rely on current state.
+    // To keep logic simple and self-contained for verification:
+    String? localReset = await _storage.read(key: _resetKey);
+    bool isReset = localReset == 'true';
+
+    if (isReset) {
       _isPremium = false;
       await _storage.write(key: _premiumKey, value: 'false');
       await _storage.write(key: _resetKey, value: 'false');
@@ -96,7 +121,8 @@ class BillingService extends ChangeNotifier {
     StreamSubscription<List<PurchaseDetails>>? tempSubscription;
     tempSubscription = _iap.purchaseStream.listen(
       (List<PurchaseDetails> purchaseDetailsList) {
-        debugPrint('BillingService: Received purchase details: $purchaseDetailsList');
+        debugPrint(
+            'BillingService: Received purchase details: $purchaseDetailsList');
         for (var purchase in purchaseDetailsList) {
           if (purchase.productID == _premiumProductId) {
             if (purchase.status == PurchaseStatus.purchased ||
@@ -202,7 +228,8 @@ class BillingService extends ChangeNotifier {
         _isReset = false;
         await _storage.write(key: _premiumKey, value: 'true');
         await _storage.write(key: _resetKey, value: 'false');
-        debugPrint('BillingService: Item already owned, premium status granted');
+        debugPrint(
+            'BillingService: Item already owned, premium status granted');
         notifyListeners();
         _showSnackBar(context, 'You already own Premium! Access granted.');
         return true;
@@ -215,7 +242,7 @@ class BillingService extends ChangeNotifier {
   Future<void> restorePurchase() async {
     _isReset = false;
     await _storage.write(key: _resetKey, value: 'false');
-    await _loadPremiumStatus();
+    await _verifyPurchaseStatus();
     notifyListeners();
   }
 
@@ -239,7 +266,8 @@ class BillingService extends ChangeNotifier {
             _storage.write(key: _premiumKey, value: 'true');
             _storage.write(key: _resetKey, value: 'false');
             _iap.completePurchase(purchase);
-            debugPrint('BillingService: Premium purchased/restored successfully');
+            debugPrint(
+                'BillingService: Premium purchased/restored successfully');
             notifyListeners();
             break;
           case PurchaseStatus.pending:

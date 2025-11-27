@@ -5,24 +5,27 @@ import 'package:QuickMath_Kids/services/billing_service.dart';
 class AppTheme {
   static double _scaleFactor(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final baseScale = screenWidth / 360; 
+    final baseScale = screenWidth / 360;
     return screenWidth > 600 ? baseScale.clamp(0.8, 1.2) : baseScale;
   }
 
-  static ThemeData getTheme(WidgetRef ref, bool isDarkMode, BuildContext context) {
+  static ThemeData getTheme(
+      WidgetRef ref, bool isDarkMode, BuildContext context) {
     final billingService = ref.watch(billingServiceProvider);
     final bool isPremium = billingService.isPremium;
     final scale = _scaleFactor(context);
     final isTablet = MediaQuery.of(context).size.width > 600;
 
-    final Color primaryColor = Colors.blue[600]!; 
-    final Color secondaryColor = Colors.blue[300]!; 
-    final Color premiumAccentColor = isPremium ? Colors.amber[600]! : Colors.blue[400]!; 
-    final Color premiumIconColor = isPremium ? Colors.amber[600]! : Colors.white; 
+    final Color primaryColor = Colors.blue[600]!;
+    final Color secondaryColor = Colors.blue[300]!;
+    final Color premiumAccentColor =
+        isPremium ? Colors.amber[600]! : Colors.blue[400]!;
+    final Color premiumIconColor =
+        isPremium ? Colors.amber[600]! : Colors.white;
     final Color backgroundColor = isDarkMode ? Colors.black : Colors.white;
 
     final Color surfaceColor = isDarkMode
-        ? Color.alphaBlend(primaryColor.withOpacity(0.1), Colors.black) 
+        ? Color.alphaBlend(primaryColor.withOpacity(0.1), Colors.black)
         : Color.alphaBlend(primaryColor.withOpacity(0.1), Colors.white);
 
     final Color onPrimaryColor = isDarkMode ? Colors.white : Colors.black;
@@ -55,7 +58,7 @@ class AppTheme {
           fontWeight: FontWeight.bold,
         ),
         iconTheme: IconThemeData(
-          color: Colors.white, 
+          color: Colors.white,
           size: 22 * scale,
         ),
       ),
@@ -66,7 +69,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16 * scale),
             side: BorderSide(
-              color: premiumAccentColor, 
+              color: premiumAccentColor,
               width: 2 * scale,
             ),
           ),
@@ -108,7 +111,7 @@ class AppTheme {
         ),
       ),
       iconTheme: IconThemeData(
-        color: premiumIconColor, 
+        color: premiumIconColor,
         size: 22 * scale,
       ),
       dividerColor: secondaryColor.withOpacity(0.3),
@@ -121,36 +124,42 @@ class AppTheme {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(8 * scale)),
           borderSide: BorderSide(
-            color: premiumAccentColor, 
+            color: premiumAccentColor,
             width: 2 * scale,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(8 * scale)),
           borderSide: BorderSide(
-            color: premiumAccentColor, 
+            color: premiumAccentColor,
             width: 2 * scale,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(8 * scale)),
           borderSide: BorderSide(
-            color: secondaryColor, 
+            color: secondaryColor,
             width: 2 * scale,
           ),
         ),
       ),
       progressIndicatorTheme: ProgressIndicatorThemeData(
-        color: primaryColor, 
+        color: primaryColor,
         linearTrackColor: secondaryColor.withOpacity(0.3),
         circularTrackColor: secondaryColor.withOpacity(0.3),
       ),
       snackBarTheme: SnackBarThemeData(
         contentTextStyle: TextStyle(
           fontSize: (isTablet ? 14 : 14) * scale,
-          color: onSurfaceColor,
+          color: Colors.white,
+          fontWeight: FontWeight.w500,
         ),
-        backgroundColor: surfaceColor,
+        backgroundColor: Colors.grey[900],
+        actionTextColor: premiumAccentColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8 * scale),
+        ),
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }

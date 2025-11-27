@@ -90,7 +90,8 @@ class OperationDropdown extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             children: [
-              Icon(Icons.tune_rounded, size: 22, color: theme.colorScheme.primary),
+              Icon(Icons.tune_rounded,
+                  size: 22, color: theme.colorScheme.primary),
               const SizedBox(width: 12),
               Text(
                 'Select an operation',
@@ -108,11 +109,12 @@ class OperationDropdown extends ConsumerWidget {
           final displayName = _getDisplayName(operation);
           final operationName = displayName.split(':')[0];
           final difficultyName = displayName.split(':')[1].trim();
-          
+
           return DropdownMenuItem<Operation>(
             value: operation,
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8), // Increased padding
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8), // Increased padding
               child: Row(
                 children: [
                   Container(
@@ -121,7 +123,8 @@ class OperationDropdown extends ConsumerWidget {
                     decoration: BoxDecoration(
                       color: difficultyColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: difficultyColor.withOpacity(0.3)),
+                      border:
+                          Border.all(color: difficultyColor.withOpacity(0.3)),
                     ),
                     child: Icon(
                       _getOperationIcon(operation),
@@ -163,14 +166,18 @@ class OperationDropdown extends ConsumerWidget {
                   ),
                   const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), // Increased padding
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 4), // Increased padding
                     decoration: BoxDecoration(
                       color: difficultyColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
-                      operation.name.contains('Beginner') ? 'Easy' : 
-                      operation.name.contains('Intermediate') ? 'Medium' : 'Hard',
+                      operation.name.contains('Beginner')
+                          ? 'Easy'
+                          : operation.name.contains('Intermediate')
+                              ? 'Medium'
+                              : 'Hard',
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w600,
                         fontSize: 11, // Increased font size
@@ -223,7 +230,8 @@ class OperationDropdown extends ConsumerWidget {
           iconDisabledColor: theme.colorScheme.onSurface.withOpacity(0.3),
         ),
         dropdownStyleData: DropdownStyleData(
-          maxHeight: 420, // Slightly increased for larger items
+          maxHeight: MediaQuery.of(context).size.height *
+              0.35, // Limit height to avoid system nav overlap
           width: MediaQuery.of(context).size.width - 80,
           padding: const EdgeInsets.symmetric(vertical: 8), // Increased padding
           decoration: BoxDecoration(
@@ -320,7 +328,8 @@ class RangeDropdown extends ConsumerWidget {
       SnackBar(
         content: Row(
           children: [
-            Icon(Icons.workspace_premium_rounded, color: Colors.amber, size: 20),
+            Icon(Icons.workspace_premium_rounded,
+                color: Colors.amber, size: 20),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -349,7 +358,8 @@ class RangeDropdown extends ConsumerWidget {
 
   Widget _buildPremiumBadge() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), // Increased padding
+      padding: const EdgeInsets.symmetric(
+          horizontal: 8, vertical: 4), // Increased padding
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.amber.shade400, Colors.orange.shade600],
@@ -368,7 +378,8 @@ class RangeDropdown extends ConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.workspace_premium_rounded, size: 12, color: Colors.white), // Larger icon
+          Icon(Icons.workspace_premium_rounded,
+              size: 12, color: Colors.white), // Larger icon
           const SizedBox(width: 4),
           Text(
             'Premium',
@@ -399,7 +410,8 @@ class RangeDropdown extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
             children: [
-              Icon(Icons.linear_scale_rounded, size: 20, color: theme.colorScheme.primary), // Larger icon
+              Icon(Icons.linear_scale_rounded,
+                  size: 20, color: theme.colorScheme.primary), // Larger icon
               const SizedBox(width: 12),
               Text(
                 'Select a range',
@@ -420,19 +432,20 @@ class RangeDropdown extends ConsumerWidget {
             value: range,
             enabled: !isLocked,
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8), // Increased padding
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8), // Increased padding
               child: Row(
                 children: [
                   Container(
                     width: 36, // Larger
                     height: 36,
                     decoration: BoxDecoration(
-                      color: isLocked 
+                      color: isLocked
                           ? Colors.grey.withOpacity(0.1)
                           : theme.colorScheme.primary.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: isLocked 
+                        color: isLocked
                             ? Colors.grey.withOpacity(0.3)
                             : theme.colorScheme.primary.withOpacity(0.3),
                       ),
@@ -531,7 +544,7 @@ class RangeDropdown extends ConsumerWidget {
           iconDisabledColor: theme.colorScheme.onSurface.withOpacity(0.3),
         ),
         dropdownStyleData: DropdownStyleData(
-          maxHeight: 420,
+          maxHeight: MediaQuery.of(context).size.height * 0.35,
           width: MediaQuery.of(context).size.width - 80,
           padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
