@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:QuickMath_Kids/screens/start_screen/start_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:upgrader/upgrader.dart';
 import 'app_theme.dart';
 import 'package:QuickMath_Kids/services/billing_service.dart';
 
@@ -151,12 +151,14 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDarkMode = ref.watch(darkModeProvider);
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.getTheme(ref, false, context),
-      darkTheme: AppTheme.getTheme(ref, true, context),
-      themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
-      home: const SplashScreen(),
+    return UpgradeAlert(
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.getTheme(ref, false, context),
+        darkTheme: AppTheme.getTheme(ref, true, context),
+        themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+        home: const SplashScreen(),
+      ),
     );
   }
 }
