@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:QuickMath_Kids/screens/home_screen/home_page.dart';
+import 'package:QuickMath_Kids/screens/start_screen/start_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app_theme.dart';

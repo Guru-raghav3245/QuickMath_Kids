@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:QuickMath_Kids/screens/home_screen/dropdowns/dropdown_widgets.dart';
-import 'package:QuickMath_Kids/screens/home_screen/dropdowns/dropdown_parameters.dart';
-import 'package:QuickMath_Kids/screens/home_screen/timer_wheel_picker.dart';
-import 'package:QuickMath_Kids/screens/home_screen/drawer.dart';
+import 'package:QuickMath_Kids/screens/start_screen/dropdowns/dropdown_widgets.dart';
+import 'package:QuickMath_Kids/screens/start_screen/dropdowns/dropdown_parameters.dart';
+import 'package:QuickMath_Kids/screens/start_screen/timer_wheel_picker.dart';
+import 'package:QuickMath_Kids/screens/start_screen/drawer.dart';
 import 'package:QuickMath_Kids/screens/practice_screen/practice_screen.dart';
 import 'package:QuickMath_Kids/services/billing_service.dart';
 import 'package:QuickMath_Kids/app_theme.dart';

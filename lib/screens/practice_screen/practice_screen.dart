@@ -20,7 +20,7 @@ import 'package:QuickMath_Kids/app_theme.dart';
 import 'package:QuickMath_Kids/services/billing_service.dart';
 import 'package:QuickMath_Kids/screens/settings_screen.dart';
 import 'package:QuickMath_Kids/screens/result_screen/result_screen.dart';
-import 'package:QuickMath_Kids/screens/home_screen/home_page.dart';
+import 'package:QuickMath_Kids/screens/start_screen/start_screen.dart';
 
 class PracticeScreen extends StatefulWidget {
   final Function(String, WidgetRef) triggerTTS;
