@@ -50,6 +50,16 @@ class BillingService extends ChangeNotifier {
     _performBackgroundVerification();
   }
 
+  Future<void> grantPromoPremium() async {
+  _isPremium = true;
+  _isReset = false;
+  await _storage.write(key: _premiumKey, value: 'true');
+  await _storage.write(key: _resetKey, value: 'false');
+  debugPrint('BillingService: Premium granted via promo code');
+  notifyListeners();
+}
+
+
   Future<void> _performBackgroundVerification() async {
     if (!Platform.isAndroid) {
       debugPrint('BillingService: This app only supports Android billing.');

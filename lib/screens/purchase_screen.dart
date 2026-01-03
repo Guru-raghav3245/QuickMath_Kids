@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../services/billing_service.dart';
 
 class PurchaseScreen extends ConsumerStatefulWidget {
@@ -149,12 +150,12 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
                         : billingService.isPremium
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(Icons.check_circle, color: Colors.green, size: 28),
-                                  const SizedBox(width: 12),
+                                children: const [
+                                  Icon(Icons.check_circle, color: Colors.green, size: 28),
+                                  SizedBox(width: 12),
                                   Text(
-                                    'You’re Already Premium!',
-                                    style: GoogleFonts.poppins(
+                                    'You\'re Already Premium!',
+                                    style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w600,
                                       color: Colors.green,
@@ -169,7 +170,7 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
                                     setState(() {
                                       _isPurchasing = true;
                                     });
-                                    await ref.read(billingServiceProvider).restorePurchase();
+                                    await ref.read(billingServiceProvider.notifier).restorePurchase();
                                     final success = await billingService.purchasePremium(context);
                                     setState(() {
                                       _isPurchasing = false;
@@ -215,6 +216,26 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
                   ),
                   const SizedBox(height: 16),
                   Center(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _showPromoDialog(context),
+                      icon: const Icon(Icons.card_giftcard, color: Colors.white),
+                      label: Text(
+                        'Redeem Promo Code',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.colorScheme.secondary,
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Center(
                     child: TextButton.icon(
                       onPressed: () => Navigator.pop(context),
                       icon: Icon(
@@ -237,6 +258,126 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _showPromoDialog(BuildContext context) async {
+    final TextEditingController codeController = TextEditingController();
+    bool isRedeeming = false;
+    final theme = Theme.of(context);
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              title: Row(
+                children: [
+                  Icon(Icons.card_giftcard, color: theme.colorScheme.primary, size: 28),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Redeem Promo Code',
+                    style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Enter your Google Play promo code to unlock Premium for FREE!',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      color: theme.colorScheme.onSurface.withOpacity(0.8),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                  TextField(
+                    controller: codeController,
+                    decoration: InputDecoration(
+                      labelText: 'Promo Code (e.g. ABC123XYZ)',
+                      prefixIcon: Icon(Icons.vpn_key, color: theme.colorScheme.primary),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      filled: true,
+                      fillColor: theme.colorScheme.surface,
+                    ),
+                    textCapitalization: TextCapitalization.characters,
+                    autofocus: true,
+                    autocorrect: false,
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: isRedeeming ? null : () => Navigator.pop(context),
+                  child: Text(
+                    'Cancel',
+                    style: GoogleFonts.poppins(color: theme.colorScheme.onSurface.withOpacity(0.7)),
+                  ),
+                ),
+                ElevatedButton.icon(
+                  onPressed: isRedeeming
+                      ? null
+                      : () async {
+                          final code = codeController.text.trim().toUpperCase();
+                          if (code.isEmpty) return;
+
+                          setDialogState(() => isRedeeming = true);
+
+                          // Pure Google Play Console flow - NO BACKEND
+                          final redeemUrl = Uri.parse('https://play.google.com/redeem?code=$code');
+                          
+                          if (await canLaunchUrl(redeemUrl)) {
+                            await launchUrl(redeemUrl, mode: LaunchMode.externalApplication);
+                          } else {
+                            await launchUrl(Uri.parse('https://play.google.com/redeem'), mode: LaunchMode.externalApplication);
+                          }
+                          
+                          setDialogState(() => isRedeeming = false);
+                          Navigator.pop(context); // Close dialog
+                          
+                          // Instructions - app auto-detects after Play Store redemption
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                '✅ Code sent to Play Store!\nComplete redemption, then return to app.',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              backgroundColor: Colors.orange,
+                              duration: const Duration(seconds: 5),
+                              action: SnackBarAction(
+                                label: 'Got it!',
+                                textColor: Colors.white,
+                                onPressed: () {},
+                              ),
+                            ),
+                          );
+                        },
+                  icon: isRedeeming
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        )
+                      : const Icon(Icons.redeem, size: 20),
+                  label: Text(isRedeeming ? 'Opening Play Store...' : 'Redeem Code'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.colorScheme.primary,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 

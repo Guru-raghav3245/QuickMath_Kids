@@ -48,13 +48,13 @@ class AppDrawer extends ConsumerWidget {
                 children: [
                   Icon(
                     Icons.calculate,
-                    size: 50,
+                    size: 40,
                     color: theme.colorScheme.onPrimary,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   Text(
                     'QuickMath Kids',
-                    style: theme.textTheme.headlineMedium?.copyWith(
+                    style: theme.textTheme.titleLarge?.copyWith(
                       color: theme.colorScheme.onPrimary,
                       fontWeight: FontWeight.bold,
                     ),

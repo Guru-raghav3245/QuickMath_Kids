@@ -426,7 +426,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
   }
 
   void endQuiz() {
-    _startInactivityTimer();
+    _inactivityTimer?.cancel();
     stopTimer();
 
     Navigator.push(
