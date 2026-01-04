@@ -1,5 +1,7 @@
 # QuickMath Kids
 
+## AVAILABLE ON THE PLAY STORE RIGHT NOW - https://play.google.com/store/apps/details?id=com.guru.oral_app_new
+
 An interactive math practice app designed to make learning fun and engaging for children through audio-based exercises.
 
 ## What Makes QuickMath Kids Unique?
