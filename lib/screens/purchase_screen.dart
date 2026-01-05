@@ -11,8 +11,33 @@ class PurchaseScreen extends ConsumerStatefulWidget {
   _PurchaseScreenState createState() => _PurchaseScreenState();
 }
 
-class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
+// Added WidgetsBindingObserver to keep the UI in sync with external Play Store changes
+class _PurchaseScreenState extends ConsumerState<PurchaseScreen>
+    with WidgetsBindingObserver {
   bool _isPurchasing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Register observer to listen for app resume
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    // Unregister observer
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // When the user comes back to the app after redeeming a code in Play Store
+    if (state == AppLifecycleState.resumed) {
+      debugPrint('PurchaseScreen: App resumed, refreshing premium status...');
+      ref.read(billingServiceProvider).restorePurchase();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +85,8 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.star, color: Colors.amber[400], size: 36),
+                              Icon(Icons.star,
+                                  color: Colors.amber[400], size: 36),
                               const SizedBox(width: 12),
                               Text(
                                 'Go Premium!',
@@ -78,7 +104,8 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
                             style: GoogleFonts.poppins(
                               fontSize: 16,
                               fontWeight: FontWeight.w400,
-                              color: theme.colorScheme.onSurface.withOpacity(0.8),
+                              color:
+                                  theme.colorScheme.onSurface.withOpacity(0.8),
                             ),
                           ),
                           const SizedBox(height: 24),
@@ -86,30 +113,35 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
                             context,
                             icon: Icons.history,
                             title: 'Wrong Answers History',
-                            description: 'Review and practice questions you got wrong to improve your skills.',
+                            description:
+                                'Review and practice questions you got wrong to improve your skills.',
                           ),
                           _buildFeatureTile(
                             context,
                             icon: Icons.history_toggle_off,
                             title: 'Quiz History',
-                            description: 'Track your past quiz performances to monitor progress.',
+                            description:
+                                'Track your past quiz performances to monitor progress.',
                           ),
                           _buildFeatureTile(
                             context,
                             icon: Icons.settings,
                             title: 'Advanced Settings',
-                            description: 'Customize your learning experience with premium settings options.',
+                            description:
+                                'Customize your learning experience with premium settings options.',
                           ),
                           _buildFeatureTile(
                             context,
                             icon: Icons.lock_open,
                             title: 'Exclusive Practice Ranges',
-                            description: 'Access advanced and mixed number ranges for all operations.',
+                            description:
+                                'Access advanced and mixed number ranges for all operations.',
                           ),
                           const SizedBox(height: 24),
                           Row(
                             children: [
-                              Icon(Icons.monetization_on, color: theme.colorScheme.primary, size: 28),
+                              Icon(Icons.monetization_on,
+                                  color: theme.colorScheme.primary, size: 28),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
@@ -145,13 +177,15 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
                     child: _isPurchasing
                         ? CircularProgressIndicator(
                             strokeWidth: 4,
-                            valueColor: AlwaysStoppedAnimation(theme.colorScheme.primary),
+                            valueColor: AlwaysStoppedAnimation(
+                                theme.colorScheme.primary),
                           )
                         : billingService.isPremium
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: const [
-                                  Icon(Icons.check_circle, color: Colors.green, size: 28),
+                                  Icon(Icons.check_circle,
+                                      color: Colors.green, size: 28),
                                   SizedBox(width: 12),
                                   Text(
                                     'You\'re Already Premium!',
@@ -170,13 +204,17 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
                                     setState(() {
                                       _isPurchasing = true;
                                     });
-                                    await ref.read(billingServiceProvider.notifier).restorePurchase();
-                                    final success = await billingService.purchasePremium(context);
+                                    await ref
+                                        .read(billingServiceProvider.notifier)
+                                        .restorePurchase();
+                                    final success = await billingService
+                                        .purchasePremium(context);
                                     setState(() {
                                       _isPurchasing = false;
                                     });
                                     if (success) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(
                                           content: Text(
                                             'Welcome to Premium!',
@@ -185,13 +223,15 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
-                                          backgroundColor: theme.colorScheme.primary,
+                                          backgroundColor:
+                                              theme.colorScheme.primary,
                                         ),
                                       );
                                       Navigator.pop(context);
                                     }
                                   },
-                                  icon: const Icon(Icons.lock_open, color: Colors.white, size: 24),
+                                  icon: const Icon(Icons.lock_open,
+                                      color: Colors.white, size: 24),
                                   label: Text(
                                     'Unlock for ₹300',
                                     style: GoogleFonts.poppins(
@@ -218,7 +258,8 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
                   Center(
                     child: ElevatedButton.icon(
                       onPressed: () => _showPromoDialog(context),
-                      icon: const Icon(Icons.card_giftcard, color: Colors.white),
+                      icon:
+                          const Icon(Icons.card_giftcard, color: Colors.white),
                       label: Text(
                         'Redeem Promo Code',
                         style: GoogleFonts.poppins(
@@ -229,8 +270,10 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.colorScheme.secondary,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                       ),
                     ),
                   ),
@@ -273,14 +316,17 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
               title: Row(
                 children: [
-                  Icon(Icons.card_giftcard, color: theme.colorScheme.primary, size: 28),
+                  Icon(Icons.card_giftcard,
+                      color: theme.colorScheme.primary, size: 28),
                   const SizedBox(width: 12),
                   Text(
                     'Redeem Promo Code',
-                    style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w600),
+                    style: GoogleFonts.poppins(
+                        fontSize: 20, fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
@@ -300,8 +346,10 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
                     controller: codeController,
                     decoration: InputDecoration(
                       labelText: 'Promo Code (e.g. ABC123XYZ)',
-                      prefixIcon: Icon(Icons.vpn_key, color: theme.colorScheme.primary),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      prefixIcon:
+                          Icon(Icons.vpn_key, color: theme.colorScheme.primary),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
                       filled: true,
                       fillColor: theme.colorScheme.surface,
                     ),
@@ -316,7 +364,8 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
                   onPressed: isRedeeming ? null : () => Navigator.pop(context),
                   child: Text(
                     'Cancel',
-                    style: GoogleFonts.poppins(color: theme.colorScheme.onSurface.withOpacity(0.7)),
+                    style: GoogleFonts.poppins(
+                        color: theme.colorScheme.onSurface.withOpacity(0.7)),
                   ),
                 ),
                 ElevatedButton.icon(
@@ -328,19 +377,21 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
 
                           setDialogState(() => isRedeeming = true);
 
-                          // Pure Google Play Console flow - NO BACKEND
-                          final redeemUrl = Uri.parse('https://play.google.com/redeem?code=$code');
-                          
+                          final redeemUrl = Uri.parse(
+                              'https://play.google.com/redeem?code=$code');
+
                           if (await canLaunchUrl(redeemUrl)) {
-                            await launchUrl(redeemUrl, mode: LaunchMode.externalApplication);
+                            await launchUrl(redeemUrl,
+                                mode: LaunchMode.externalApplication);
                           } else {
-                            await launchUrl(Uri.parse('https://play.google.com/redeem'), mode: LaunchMode.externalApplication);
+                            await launchUrl(
+                                Uri.parse('https://play.google.com/redeem'),
+                                mode: LaunchMode.externalApplication);
                           }
-                          
+
                           setDialogState(() => isRedeeming = false);
-                          Navigator.pop(context); // Close dialog
-                          
-                          // Instructions - app auto-detects after Play Store redemption
+                          Navigator.pop(context);
+
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
@@ -352,11 +403,6 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
                               ),
                               backgroundColor: Colors.orange,
                               duration: const Duration(seconds: 5),
-                              action: SnackBarAction(
-                                label: 'Got it!',
-                                textColor: Colors.white,
-                                onPressed: () {},
-                              ),
                             ),
                           );
                         },
@@ -364,10 +410,12 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen> {
                       ? SizedBox(
                           width: 20,
                           height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2, color: Colors.white),
                         )
                       : const Icon(Icons.redeem, size: 20),
-                  label: Text(isRedeeming ? 'Opening Play Store...' : 'Redeem Code'),
+                  label: Text(
+                      isRedeeming ? 'Opening Play Store...' : 'Redeem Code'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: theme.colorScheme.primary,
                     foregroundColor: Colors.white,

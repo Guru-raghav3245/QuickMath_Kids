@@ -46,19 +46,17 @@ class BillingService extends ChangeNotifier {
     }
 
     // 2. Perform network checks in background (SLOW)
-    // We do not await this, so the app startup is not blocked.
     _performBackgroundVerification();
   }
 
   Future<void> grantPromoPremium() async {
-  _isPremium = true;
-  _isReset = false;
-  await _storage.write(key: _premiumKey, value: 'true');
-  await _storage.write(key: _resetKey, value: 'false');
-  debugPrint('BillingService: Premium granted via promo code');
-  notifyListeners();
-}
-
+    _isPremium = true;
+    _isReset = false;
+    await _storage.write(key: _premiumKey, value: 'true');
+    await _storage.write(key: _resetKey, value: 'false');
+    debugPrint('BillingService: Premium granted via promo code');
+    notifyListeners();
+  }
 
   Future<void> _performBackgroundVerification() async {
     if (!Platform.isAndroid) {
@@ -114,10 +112,6 @@ class BillingService extends ChangeNotifier {
   }
 
   Future<void> _verifyPurchaseStatus() async {
-    String? localPremium = await _storage.read(key: _premiumKey);
-    // _isReset is already loaded by _loadCachedStatus, but we re-read or use state
-    // For safety in this background check, let's re-read or rely on current state.
-    // To keep logic simple and self-contained for verification:
     String? localReset = await _storage.read(key: _resetKey);
     bool isReset = localReset == 'true';
 
@@ -137,30 +131,30 @@ class BillingService extends ChangeNotifier {
     tempSubscription = _iap.purchaseStream.listen(
       (List<PurchaseDetails> purchaseDetailsList) {
         debugPrint(
-            'BillingService: Received purchase details: $purchaseDetailsList');
+            'BillingService: Received purchase details during verify: $purchaseDetailsList');
         for (var purchase in purchaseDetailsList) {
           if (purchase.productID == _premiumProductId) {
             if (purchase.status == PurchaseStatus.purchased ||
                 purchase.status == PurchaseStatus.restored) {
               isPurchased = true;
-              completer.complete(true);
-              tempSubscription?.cancel();
-              break;
+
+              // CRITICAL FIX: Ensure redeemed codes are acknowledged
+              if (purchase.pendingCompletePurchase) {
+                _iap.completePurchase(purchase);
+              }
+
+              if (!completer.isCompleted) completer.complete(true);
             } else if (purchase.status == PurchaseStatus.error) {
               debugPrint('BillingService: Purchase error: ${purchase.error}');
-              completer.complete(false);
-              tempSubscription?.cancel();
-              break;
+              if (!completer.isCompleted) completer.complete(false);
             }
           }
         }
       },
       onDone: () {
-        debugPrint('BillingService: Purchase stream done during restore');
         if (!completer.isCompleted) completer.complete(false);
       },
       onError: (error) {
-        debugPrint('BillingService: Restore purchases error: $error');
         if (!completer.isCompleted) completer.complete(false);
       },
     );
@@ -175,28 +169,19 @@ class BillingService extends ChangeNotifier {
     await completer.future.timeout(const Duration(seconds: 15), onTimeout: () {
       debugPrint('BillingService: Restore purchases timed out');
       return false;
-    }).catchError((e) {
-      debugPrint('BillingService: Restore error caught: $e');
-      return false;
-    });
+    }).catchError((e) => false);
 
     await tempSubscription.cancel();
 
     if (isPurchased) {
-      if (localPremium != 'true') {
-        await _storage.write(key: _premiumKey, value: 'true');
-      }
+      await _storage.write(key: _premiumKey, value: 'true');
+      await _storage.write(key: _resetKey, value: 'false');
       _isPremium = true;
       _isReset = false;
-      await _storage.write(key: _resetKey, value: 'false');
       debugPrint('BillingService: Premium status confirmed');
     } else {
-      if (localPremium != 'false') {
-        await _storage.write(key: _premiumKey, value: 'false');
-      }
+      await _storage.write(key: _premiumKey, value: 'false');
       _isPremium = false;
-      _isReset = false;
-      await _storage.write(key: _resetKey, value: 'false');
       debugPrint('BillingService: No premium purchase found');
     }
     notifyListeners();
@@ -208,15 +193,7 @@ class BillingService extends ChangeNotifier {
       return false;
     }
 
-    final bool available;
-    try {
-      available = await _iap.isAvailable();
-    } catch (e) {
-      debugPrint('BillingService: Error checking billing availability: $e');
-      _showSnackBar(context, 'In-app purchases are not available.');
-      return false;
-    }
-
+    final bool available = await _iap.isAvailable();
     if (!available) {
       _showSnackBar(context, 'In-app purchases are not available.');
       return false;
@@ -225,7 +202,6 @@ class BillingService extends ChangeNotifier {
     final ProductDetailsResponse response =
         await _iap.queryProductDetails({_premiumProductId});
     if (response.error != null || response.productDetails.isEmpty) {
-      debugPrint('BillingService: Product query error: ${response.error}');
       _showSnackBar(context, 'Product not found. Please try again later.');
       return false;
     }
@@ -237,19 +213,12 @@ class BillingService extends ChangeNotifier {
       await _iap.buyNonConsumable(purchaseParam: purchaseParam);
       return true;
     } catch (e) {
-      debugPrint('BillingService: Purchase error: $e');
       if (e.toString().contains('itemAlreadyOwned')) {
-        _isPremium = true;
-        _isReset = false;
-        await _storage.write(key: _premiumKey, value: 'true');
-        await _storage.write(key: _resetKey, value: 'false');
-        debugPrint(
-            'BillingService: Item already owned, premium status granted');
-        notifyListeners();
+        await grantPromoPremium();
         _showSnackBar(context, 'You already own Premium! Access granted.');
         return true;
       }
-      _showSnackBar(context, 'Failed to initiate purchase. Please try again.');
+      _showSnackBar(context, 'Failed to initiate purchase.');
       return false;
     }
   }
@@ -280,7 +249,11 @@ class BillingService extends ChangeNotifier {
             _isReset = false;
             _storage.write(key: _premiumKey, value: 'true');
             _storage.write(key: _resetKey, value: 'false');
-            _iap.completePurchase(purchase);
+
+            // CRITICAL: Acknowledge purchase so Play Store knows redemption is finished
+            if (purchase.pendingCompletePurchase) {
+              _iap.completePurchase(purchase);
+            }
             debugPrint(
                 'BillingService: Premium purchased/restored successfully');
             notifyListeners();
@@ -300,9 +273,8 @@ class BillingService extends ChangeNotifier {
   }
 
   void _showSnackBar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   void dispose() {
