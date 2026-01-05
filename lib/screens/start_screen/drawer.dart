@@ -10,6 +10,7 @@ import 'package:QuickMath_Kids/services/billing_service.dart';
 import 'package:QuickMath_Kids/screens/purchase_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:QuickMath_Kids/app_theme.dart';
+import 'package:package_info_plus/package_info_plus.dart'; //
 
 class AppDrawer extends ConsumerWidget {
   final BillingService billingService;
@@ -58,6 +59,22 @@ class AppDrawer extends ConsumerWidget {
                       color: theme.colorScheme.onPrimary,
                       fontWeight: FontWeight.bold,
                     ),
+                  ),
+                  // FutureBuilder to display the version number
+                  FutureBuilder<PackageInfo>(
+                    future: PackageInfo.fromPlatform(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Text(
+                          'Version: ${snapshot.data!.version}', // Changed from packageName to version
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onPrimary.withOpacity(0.8),
+                            fontSize: 12,
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
                   ),
                 ],
               ),
@@ -149,7 +166,6 @@ class AppDrawer extends ConsumerWidget {
               ),
               isDarkMode: isDarkMode,
             ),
-            // In the SwitchListTile part, update to:
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
               child: Consumer(

@@ -30,6 +30,7 @@ dependencies:
   dropdown_button2: ^2.3.9
   upgrader: ^12.3.0
   in_app_purchase_android: ^0.4.0+8
+  package_info_plus: ^9.0.0
 
 dev_dependencies:
   flutter_test:
