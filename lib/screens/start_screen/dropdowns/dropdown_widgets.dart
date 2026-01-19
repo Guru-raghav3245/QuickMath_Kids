@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:QuickMath_Kids/question_logic/enum_values.dart';
 import 'package:QuickMath_Kids/services/billing_service.dart';
 import 'package:QuickMath_Kids/screens/purchase_screen.dart';
@@ -259,16 +258,16 @@ class _OperationGridSheet extends StatelessWidget {
     switch (op) {
       // Addition
       case Operation.additionBeginner:
-        return '+1 to +5, 1-10';
+        return '+1 to +10, 1-10';
       case Operation.additionIntermediate:
-        return '+6 to +10, 10-50';
+        return '10-50';
       case Operation.additionAdvanced:
         return '50-200';
       // Subtraction
       case Operation.subtractionBeginner:
-        return '-1 to -5, 1-20';
+        return '-1 to -10, 1-20';
       case Operation.subtractionIntermediate:
-        return '-6 to -10, 20-50';
+        return '20-50';
       case Operation.subtractionAdvanced:
         return '50-200';
       // Multiplication
@@ -558,7 +557,7 @@ class RangeDropdown extends ConsumerWidget {
                 'Premium feature unlocked with subscription',
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w500,
-                  fontSize: 14, // Increased font size
+                  fontSize: 14,
                   color: Colors.white,
                 ),
               ),
@@ -578,43 +577,40 @@ class RangeDropdown extends ConsumerWidget {
     );
   }
 
-  Widget _buildPremiumBadge() {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: 8, vertical: 4), // Increased padding
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.amber.shade400, Colors.orange.shade600],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(6),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.amber.withOpacity(0.2),
-            blurRadius: 2,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.workspace_premium_rounded,
-              size: 12, color: Colors.white), // Larger icon
-          const SizedBox(width: 4),
-          Text(
-            'Premium',
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w700,
-              fontSize: 10, // Increased font size
-              color: Colors.white,
-              height: 1.0,
-            ),
-          ),
-        ],
+  void _showGridSheet(BuildContext context, bool isPremium) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _RangeGridSheet(
+        items: items,
+        selectedRange: selectedRange,
+        isPremium: isPremium,
+        paidRanges: _paidRanges,
+        onSelect: (range) {
+          if (_paidRanges.contains(range) && !isPremium) {
+            _showPremiumSnackBar(context);
+            // Don't close sheet so they can select something else or see it's locked
+          } else {
+            onChanged(range);
+            Navigator.pop(context);
+          }
+        },
       ),
     );
+  }
+
+  Color _getDifficultyColor(Range range) {
+    // Helper to determine color based on range name content
+    final name = range.name;
+    if (name.contains('Beginner')) {
+      return Colors.green;
+    } else if (name.contains('Intermediate')) {
+      return Colors.orange;
+    } else if (name.contains('Advanced')) {
+      return Colors.red;
+    }
+    return Colors.blue; // Fallback
   }
 
   @override
@@ -623,122 +619,15 @@ class RangeDropdown extends ConsumerWidget {
     final isTablet = MediaQuery.of(context).size.width > 600;
     final billingService = ref.watch(billingServiceProvider);
     final isPremium = billingService.isPremium;
+    final difficultyColor = _getDifficultyColor(selectedRange);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40.0),
-      child: DropdownButton2<Range>(
-        value: selectedRange,
-        hint: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Row(
-            children: [
-              Icon(Icons.linear_scale_rounded,
-                  size: 20, color: theme.colorScheme.primary), // Larger icon
-              const SizedBox(width: 12),
-              Text(
-                'Select a range',
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w500,
-                  fontSize: isTablet ? 17 : 15, // Increased font size
-                  color: theme.colorScheme.onSurface.withOpacity(0.7),
-                ),
-              ),
-            ],
-          ),
-        ),
-        items: items.map((item) {
-          final range = item.value!;
-          final isLocked = _paidRanges.contains(range) && !isPremium;
-          final isSelected = range == selectedRange;
-
-          return DropdownMenuItem<Range>(
-            value: range,
-            enabled: !isLocked,
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8), // Increased padding
-              child: Row(
-                children: [
-                  Container(
-                    width: 36, // Larger
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: isLocked
-                          ? Colors.grey.withOpacity(0.1)
-                          : theme.colorScheme.primary.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: isLocked
-                            ? Colors.grey.withOpacity(0.3)
-                            : theme.colorScheme.primary.withOpacity(0.3),
-                      ),
-                    ),
-                    child: Icon(
-                      isLocked ? Icons.lock_outline : Icons.psychology_outlined,
-                      size: 18, // Larger icon
-                      color: isLocked ? Colors.grey : theme.colorScheme.primary,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          getRangeDisplayName(range),
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w500,
-                            fontSize: isTablet ? 15 : 13, // Increased font size
-                            color: isLocked
-                                ? theme.colorScheme.onSurface.withOpacity(0.4)
-                                : theme.colorScheme.onSurface,
-                            height: 1.1,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        if (isLocked) ...[
-                          const SizedBox(height: 2),
-                          Text(
-                            'Premium feature',
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 11, // Increased font size
-                              color: Colors.orange,
-                              height: 1.0,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                  if (isLocked)
-                    _buildPremiumBadge()
-                  else if (isSelected)
-                    Icon(
-                      Icons.check_rounded,
-                      color: theme.colorScheme.primary,
-                      size: 20,
-                    ),
-                ],
-              ),
-            ),
-          );
-        }).toList(),
-        onChanged: (Range? newValue) {
-          if (newValue == null) return;
-          if (_paidRanges.contains(newValue) && !isPremium) {
-            _showPremiumSnackBar(context);
-            return;
-          }
-          onChanged(newValue);
-        },
-        isExpanded: true,
-        buttonStyleData: ButtonStyleData(
-          height: isTablet ? 65 : 55, // Increased height
+      child: InkWell(
+        onTap: () => _showGridSheet(context, isPremium),
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          height: isTablet ? 65 : 55,
           padding: EdgeInsets.symmetric(horizontal: isTablet ? 24 : 18),
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -762,51 +651,262 @@ class RangeDropdown extends ConsumerWidget {
               ),
             ],
           ),
-          elevation: 0,
-        ),
-        iconStyleData: IconStyleData(
-          icon: Icon(
-            Icons.arrow_drop_down_rounded,
-            color: theme.colorScheme.primary,
-          ),
-          iconSize: 26,
-          iconEnabledColor: theme.colorScheme.primary,
-          iconDisabledColor: theme.colorScheme.onSurface.withOpacity(0.3),
-        ),
-        dropdownStyleData: DropdownStyleData(
-          maxHeight: MediaQuery.of(context).size.height * 0.35,
-          width: MediaQuery.of(context).size.width - 80,
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: theme.colorScheme.surface,
-            boxShadow: [
-              BoxShadow(
-                color: theme.colorScheme.shadow.withOpacity(0.15),
-                blurRadius: 15,
-                offset: const Offset(0, 5),
+          child: Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: difficultyColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: difficultyColor.withOpacity(0.3)),
+                ),
+                child: Icon(
+                  Icons.linear_scale_rounded,
+                  size: 18,
+                  color: difficultyColor,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Selected Range',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: isTablet ? 12 : 10,
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        height: 1.1,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      getRangeDisplayName(selectedRange),
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: isTablet ? 15 : 13,
+                        color: theme.colorScheme.onSurface,
+                        height: 1.1,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(
+                Icons.arrow_drop_down_rounded,
+                color: theme.colorScheme.primary,
+                size: 26,
               ),
             ],
-            border: Border.all(
-              color: theme.colorScheme.outline.withOpacity(0.1),
-              width: 1,
-            ),
-          ),
-          offset: const Offset(0, -6),
-          scrollbarTheme: ScrollbarThemeData(
-            radius: const Radius.circular(40),
-            thickness: MaterialStateProperty.all(4),
-            thumbVisibility: MaterialStateProperty.all(true),
-            thumbColor: MaterialStateProperty.all(
-              theme.colorScheme.primary.withOpacity(0.5),
-            ),
           ),
         ),
-        menuItemStyleData: MenuItemStyleData(
-          height: 56, // Increased height
-          padding: EdgeInsets.symmetric(horizontal: isTablet ? 18 : 14),
+      ),
+    );
+  }
+}
+
+class _RangeGridSheet extends StatelessWidget {
+  final List<DropdownMenuItem<Range>> items;
+  final Range selectedRange;
+  final bool isPremium;
+  final Set<Range> paidRanges;
+  final ValueChanged<Range> onSelect;
+
+  const _RangeGridSheet({
+    required this.items,
+    required this.selectedRange,
+    required this.isPremium,
+    required this.paidRanges,
+    required this.onSelect,
+  });
+
+  Color _getRangeColor(Range range) {
+    if (range.name.contains('Beginner')) return Colors.green;
+    if (range.name.contains('Intermediate')) return Colors.orange;
+    if (range.name.contains('Advanced')) return Colors.red;
+    return Colors.blue;
+  }
+
+  Widget _buildPremiumBadge() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.amber.shade400, Colors.orange.shade600],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        underline: const SizedBox(),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.workspace_premium_rounded, size: 10, color: Colors.white),
+          const SizedBox(width: 2),
+          Text(
+            'Premium',
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w700,
+              fontSize: 8,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    // Extract actual ranges from dropdown items
+    final ranges = items.map((e) => e.value!).toList();
+
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.75,
+      ),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 10,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Handle Bar
+          Container(
+            margin: const EdgeInsets.only(top: 12, bottom: 8),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.onSurface.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          // Title
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Text(
+              'Select Range',
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onSurface,
+              ),
+            ),
+          ),
+          Divider(height: 1, color: theme.dividerColor.withOpacity(0.5)),
+
+          // Grid Content
+          Flexible(
+            child: GridView.builder(
+              padding: const EdgeInsets.all(20),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: 2.2, // Rectangular cards
+              ),
+              itemCount: ranges.length,
+              itemBuilder: (context, index) {
+                final range = ranges[index];
+                final isSelected = range == selectedRange;
+                final isLocked = paidRanges.contains(range) && !isPremium;
+                final color = _getRangeColor(range);
+                final displayName = getRangeDisplayName(range);
+
+                return Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => onSelect(range),
+                    borderRadius: BorderRadius.circular(10),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: isLocked
+                            ? Colors.grey.withOpacity(0.05)
+                            : (isSelected ? color : color.withOpacity(0.05)),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: isLocked
+                              ? Colors.grey.withOpacity(0.3)
+                              : (isSelected ? color : color.withOpacity(0.3)),
+                          width: 1.5,
+                        ),
+                        boxShadow: isSelected && !isLocked
+                            ? [
+                                BoxShadow(
+                                  color: color.withOpacity(0.3),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                )
+                              ]
+                            : null,
+                      ),
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  displayName,
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: isLocked
+                                        ? theme.colorScheme.onSurface
+                                            .withOpacity(0.4)
+                                        : (isSelected ? Colors.white : color),
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (isLocked)
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              child: Icon(
+                                Icons.lock_outline,
+                                size: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          if (isLocked)
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: _buildPremiumBadge(),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -12,6 +12,12 @@ List<DropdownMenuItem<Range>> getDropdownItems(Operation selectedOperation) {
         Range.additionBeginnerPlus3,
         Range.additionBeginnerPlus4,
         Range.additionBeginnerPlus5,
+        // Newly added to Beginner:
+        Range.additionBeginnerPlus6,
+        Range.additionBeginnerPlus7,
+        Range.additionBeginnerPlus8,
+        Range.additionBeginnerPlus9,
+        Range.additionBeginnerPlus10,
         // Ranges second
         Range.additionBeginner1to5,
         Range.additionBeginner6to10,
@@ -20,13 +26,8 @@ List<DropdownMenuItem<Range>> getDropdownItems(Operation selectedOperation) {
       break;
     case Operation.additionIntermediate:
       ranges = [
-        // Specifics first
-        Range.additionIntermediatePlus6,
-        Range.additionIntermediatePlus7,
-        Range.additionIntermediatePlus8,
-        Range.additionIntermediatePlus9,
-        Range.additionIntermediatePlus10,
-        // Ranges second
+        // No specific values left in intermediate
+        // Ranges
         Range.additionIntermediate10to20,
         Range.additionIntermediate20to30,
         Range.additionIntermediate30to40,
@@ -52,6 +53,12 @@ List<DropdownMenuItem<Range>> getDropdownItems(Operation selectedOperation) {
         Range.subtractionBeginnerMinus3,
         Range.subtractionBeginnerMinus4,
         Range.subtractionBeginnerMinus5,
+        // Newly added to Beginner:
+        Range.subtractionBeginnerMinus6,
+        Range.subtractionBeginnerMinus7,
+        Range.subtractionBeginnerMinus8,
+        Range.subtractionBeginnerMinus9,
+        Range.subtractionBeginnerMinus10,
         // Ranges second
         Range.subtractionBeginner1to10,
         Range.subtractionBeginner10to20,
@@ -60,13 +67,8 @@ List<DropdownMenuItem<Range>> getDropdownItems(Operation selectedOperation) {
       break;
     case Operation.subtractionIntermediate:
       ranges = [
-        // Specifics first
-        Range.subtractionIntermediateMinus6,
-        Range.subtractionIntermediateMinus7,
-        Range.subtractionIntermediateMinus8,
-        Range.subtractionIntermediateMinus9,
-        Range.subtractionIntermediateMinus10,
-        // Ranges second
+        // No specific values left in intermediate
+        // Ranges
         Range.subtractionIntermediate20to30,
         Range.subtractionIntermediate30to40,
         Range.subtractionIntermediate40to50,

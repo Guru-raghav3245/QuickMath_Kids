@@ -27,7 +27,7 @@ class QuestionGenerator {
             num1 = random.nextInt(10) + 1;
             num2 = random.nextInt(10) + 1;
             break;
-          // New Specific Values
+          // New Specific Values (Moved from Intermediate)
           case Range.additionBeginnerPlus1:
             num1 = random.nextInt(10) + 1;
             num2 = 1;
@@ -47,6 +47,26 @@ class QuestionGenerator {
           case Range.additionBeginnerPlus5:
             num1 = random.nextInt(10) + 1;
             num2 = 5;
+            break;
+          case Range.additionBeginnerPlus6:
+            num1 = random.nextInt(20) + 1;
+            num2 = 6;
+            break;
+          case Range.additionBeginnerPlus7:
+            num1 = random.nextInt(20) + 1;
+            num2 = 7;
+            break;
+          case Range.additionBeginnerPlus8:
+            num1 = random.nextInt(20) + 1;
+            num2 = 8;
+            break;
+          case Range.additionBeginnerPlus9:
+            num1 = random.nextInt(20) + 1;
+            num2 = 9;
+            break;
+          case Range.additionBeginnerPlus10:
+            num1 = random.nextInt(20) + 1;
+            num2 = 10;
             break;
           default:
             num1 = random.nextInt(5) + 1;
@@ -85,27 +105,6 @@ class QuestionGenerator {
             num1 = random.nextInt(41) + 10;
             num2 = random.nextInt(41) + 1;
             if (num1 + num2 > 50) num2 = 50 - num1;
-            break;
-          // New Specific Values
-          case Range.additionIntermediatePlus6:
-            num1 = random.nextInt(20) + 1;
-            num2 = 6;
-            break;
-          case Range.additionIntermediatePlus7:
-            num1 = random.nextInt(20) + 1;
-            num2 = 7;
-            break;
-          case Range.additionIntermediatePlus8:
-            num1 = random.nextInt(20) + 1;
-            num2 = 8;
-            break;
-          case Range.additionIntermediatePlus9:
-            num1 = random.nextInt(20) + 1;
-            num2 = 9;
-            break;
-          case Range.additionIntermediatePlus10:
-            num1 = random.nextInt(20) + 1;
-            num2 = 10;
             break;
           default:
             num1 = random.nextInt(11) + 10;
@@ -170,7 +169,7 @@ class QuestionGenerator {
             num1 = random.nextInt(20) + 1;
             num2 = random.nextInt(num1) + 1;
             break;
-          // New Specific Values
+          // New Specific Values (Moved from Intermediate)
           case Range.subtractionBeginnerMinus1:
             num2 = 1;
             num1 = random.nextInt(10) + num2;
@@ -190,6 +189,26 @@ class QuestionGenerator {
           case Range.subtractionBeginnerMinus5:
             num2 = 5;
             num1 = random.nextInt(10) + num2;
+            break;
+          case Range.subtractionBeginnerMinus6:
+            num2 = 6;
+            num1 = random.nextInt(20) + num2;
+            break;
+          case Range.subtractionBeginnerMinus7:
+            num2 = 7;
+            num1 = random.nextInt(20) + num2;
+            break;
+          case Range.subtractionBeginnerMinus8:
+            num2 = 8;
+            num1 = random.nextInt(20) + num2;
+            break;
+          case Range.subtractionBeginnerMinus9:
+            num2 = 9;
+            num1 = random.nextInt(20) + num2;
+            break;
+          case Range.subtractionBeginnerMinus10:
+            num2 = 10;
+            num1 = random.nextInt(20) + num2;
             break;
           default:
             num1 = random.nextInt(10) + 1;
@@ -215,27 +234,6 @@ class QuestionGenerator {
           case Range.subtractionIntermediateMixed20to50:
             num1 = random.nextInt(31) + 20;
             num2 = random.nextInt(num1 - 19) + 1;
-            break;
-          // New Specific Values
-          case Range.subtractionIntermediateMinus6:
-            num2 = 6;
-            num1 = random.nextInt(20) + num2;
-            break;
-          case Range.subtractionIntermediateMinus7:
-            num2 = 7;
-            num1 = random.nextInt(20) + num2;
-            break;
-          case Range.subtractionIntermediateMinus8:
-            num2 = 8;
-            num1 = random.nextInt(20) + num2;
-            break;
-          case Range.subtractionIntermediateMinus9:
-            num2 = 9;
-            num1 = random.nextInt(20) + num2;
-            break;
-          case Range.subtractionIntermediateMinus10:
-            num2 = 10;
-            num1 = random.nextInt(20) + num2;
             break;
           default:
             num1 = random.nextInt(11) + 20;

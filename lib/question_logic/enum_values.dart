@@ -29,6 +29,11 @@ enum Range {
   additionBeginnerPlus3,
   additionBeginnerPlus4,
   additionBeginnerPlus5,
+  additionBeginnerPlus6,
+  additionBeginnerPlus7,
+  additionBeginnerPlus8,
+  additionBeginnerPlus9,
+  additionBeginnerPlus10,
 
   // Addition: Intermediate
   additionIntermediate10to20,
@@ -36,11 +41,6 @@ enum Range {
   additionIntermediate30to40,
   additionIntermediate40to50,
   additionIntermediateMixed10to50,
-  additionIntermediatePlus6,
-  additionIntermediatePlus7,
-  additionIntermediatePlus8,
-  additionIntermediatePlus9,
-  additionIntermediatePlus10,
 
   // Addition: Advanced
   additionAdvanced50to100,
@@ -59,17 +59,17 @@ enum Range {
   subtractionBeginnerMinus3,
   subtractionBeginnerMinus4,
   subtractionBeginnerMinus5,
+  subtractionBeginnerMinus6,
+  subtractionBeginnerMinus7,
+  subtractionBeginnerMinus8,
+  subtractionBeginnerMinus9,
+  subtractionBeginnerMinus10,
 
   // Subtraction: Intermediate
   subtractionIntermediate20to30,
   subtractionIntermediate30to40,
   subtractionIntermediate40to50,
   subtractionIntermediateMixed20to50,
-  subtractionIntermediateMinus6,
-  subtractionIntermediateMinus7,
-  subtractionIntermediateMinus8,
-  subtractionIntermediateMinus9,
-  subtractionIntermediateMinus10,
 
   // Subtraction: Advanced
   subtractionAdvanced50to100,
@@ -222,6 +222,16 @@ String getRangeDisplayName(Range range) {
       return '+4';
     case Range.additionBeginnerPlus5:
       return '+5';
+    case Range.additionBeginnerPlus6:
+      return '+6';
+    case Range.additionBeginnerPlus7:
+      return '+7';
+    case Range.additionBeginnerPlus8:
+      return '+8';
+    case Range.additionBeginnerPlus9:
+      return '+9';
+    case Range.additionBeginnerPlus10:
+      return '+10';
 
     // Addition: Intermediate
     case Range.additionIntermediate10to20:
@@ -234,16 +244,6 @@ String getRangeDisplayName(Range range) {
       return '40-50';
     case Range.additionIntermediateMixed10to50:
       return 'Mixed (10-50)';
-    case Range.additionIntermediatePlus6:
-      return '+6';
-    case Range.additionIntermediatePlus7:
-      return '+7';
-    case Range.additionIntermediatePlus8:
-      return '+8';
-    case Range.additionIntermediatePlus9:
-      return '+9';
-    case Range.additionIntermediatePlus10:
-      return '+10';
 
     // Addition: Advanced
     case Range.additionAdvanced50to100:
@@ -276,6 +276,16 @@ String getRangeDisplayName(Range range) {
       return '-4';
     case Range.subtractionBeginnerMinus5:
       return '-5';
+    case Range.subtractionBeginnerMinus6:
+      return '-6';
+    case Range.subtractionBeginnerMinus7:
+      return '-7';
+    case Range.subtractionBeginnerMinus8:
+      return '-8';
+    case Range.subtractionBeginnerMinus9:
+      return '-9';
+    case Range.subtractionBeginnerMinus10:
+      return '-10';
 
     // Subtraction: Intermediate
     case Range.subtractionIntermediate20to30:
@@ -286,16 +296,6 @@ String getRangeDisplayName(Range range) {
       return '40-50';
     case Range.subtractionIntermediateMixed20to50:
       return 'Mixed (20-50)';
-    case Range.subtractionIntermediateMinus6:
-      return '-6';
-    case Range.subtractionIntermediateMinus7:
-      return '-7';
-    case Range.subtractionIntermediateMinus8:
-      return '-8';
-    case Range.subtractionIntermediateMinus9:
-      return '-9';
-    case Range.subtractionIntermediateMinus10:
-      return '-10';
 
     // Subtraction: Advanced
     case Range.subtractionAdvanced50to100:
