@@ -590,7 +590,6 @@ class RangeDropdown extends ConsumerWidget {
         onSelect: (range) {
           if (_paidRanges.contains(range) && !isPremium) {
             _showPremiumSnackBar(context);
-            // Don't close sheet so they can select something else or see it's locked
           } else {
             onChanged(range);
             Navigator.pop(context);
@@ -733,6 +732,31 @@ class _RangeGridSheet extends StatelessWidget {
     return Colors.blue;
   }
 
+  // Logic to separate specific single values from general ranges
+  bool _isSpecificValue(Range range) {
+    final name = range.name;
+    // If it contains "Mixed" or "to" (like 1to5, Upto), it is a range.
+    if (name.contains('Mixed')) return false;
+    if (name.contains('to') && !name.contains('Upto') == false) return false;
+    // Correction: '1to5' has 'to', 'Upto' has 'to'.
+    // Logic:
+    // Addition/Subtraction Specifics have 'Plus' or 'Minus'.
+    // Multiplication Specifics have 'X' (e.g. X2) but NOT 'Mixed'.
+    // Division Specifics have 'By' (e.g. By2) but NOT 'Mixed'.
+
+    if (name.contains('Plus') || name.contains('Minus')) return true;
+
+    // Check for Multiplication/Division specifics which don't have Mixed
+    if (name.contains('multiplication') &&
+        name.contains('X') &&
+        !name.contains('Mixed')) return true;
+    if (name.contains('division') &&
+        name.contains('By') &&
+        !name.contains('Mixed')) return true;
+
+    return false;
+  }
+
   Widget _buildPremiumBadge() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -762,12 +786,138 @@ class _RangeGridSheet extends StatelessWidget {
     );
   }
 
+  Widget _buildSectionHeader(BuildContext context, String title) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+      child: Row(
+        children: [
+          Container(
+            width: 4,
+            height: 16,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.primary,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: theme.colorScheme.onSurface.withOpacity(0.8),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGrid(BuildContext context, List<Range> ranges) {
+    final theme = Theme.of(context);
+    return GridView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        childAspectRatio: 2.2,
+      ),
+      itemCount: ranges.length,
+      itemBuilder: (context, index) {
+        final range = ranges[index];
+        final isSelected = range == selectedRange;
+        final isLocked = paidRanges.contains(range) && !isPremium;
+        final color = _getRangeColor(range);
+        final displayName = getRangeDisplayName(range);
+
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => onSelect(range),
+            borderRadius: BorderRadius.circular(10),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: isLocked
+                    ? Colors.grey.withOpacity(0.05)
+                    : (isSelected ? color : color.withOpacity(0.05)),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: isLocked
+                      ? Colors.grey.withOpacity(0.3)
+                      : (isSelected ? color : color.withOpacity(0.3)),
+                  width: 1.5,
+                ),
+                boxShadow: isSelected && !isLocked
+                    ? [
+                        BoxShadow(
+                          color: color.withOpacity(0.3),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        )
+                      ]
+                    : null,
+              ),
+              child: Stack(
+                children: [
+                  Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          displayName,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: isLocked
+                                ? theme.colorScheme.onSurface.withOpacity(0.4)
+                                : (isSelected ? Colors.white : color),
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (isLocked)
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Icon(
+                        Icons.lock_outline,
+                        size: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  if (isLocked)
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: _buildPremiumBadge(),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // Extract actual ranges from dropdown items
-    final ranges = items.map((e) => e.value!).toList();
+    // Split ranges
+    final allRanges = items.map((e) => e.value!).toList();
+    final specificRanges = allRanges.where((r) => _isSpecificValue(r)).toList();
+    final generalRanges = allRanges.where((r) => !_isSpecificValue(r)).toList();
 
     return Container(
       constraints: BoxConstraints(
@@ -811,99 +961,24 @@ class _RangeGridSheet extends StatelessWidget {
           ),
           Divider(height: 1, color: theme.dividerColor.withOpacity(0.5)),
 
-          // Grid Content
+          // Scrollable Content
           Flexible(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(20),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                childAspectRatio: 2.2, // Rectangular cards
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 30, top: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (specificRanges.isNotEmpty) ...[
+                    _buildSectionHeader(context, 'Specific Values'),
+                    _buildGrid(context, specificRanges),
+                    const SizedBox(height: 24),
+                  ],
+                  if (generalRanges.isNotEmpty) ...[
+                    _buildSectionHeader(context, 'Ranges'),
+                    _buildGrid(context, generalRanges),
+                  ],
+                ],
               ),
-              itemCount: ranges.length,
-              itemBuilder: (context, index) {
-                final range = ranges[index];
-                final isSelected = range == selectedRange;
-                final isLocked = paidRanges.contains(range) && !isPremium;
-                final color = _getRangeColor(range);
-                final displayName = getRangeDisplayName(range);
-
-                return Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () => onSelect(range),
-                    borderRadius: BorderRadius.circular(10),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: isLocked
-                            ? Colors.grey.withOpacity(0.05)
-                            : (isSelected ? color : color.withOpacity(0.05)),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: isLocked
-                              ? Colors.grey.withOpacity(0.3)
-                              : (isSelected ? color : color.withOpacity(0.3)),
-                          width: 1.5,
-                        ),
-                        boxShadow: isSelected && !isLocked
-                            ? [
-                                BoxShadow(
-                                  color: color.withOpacity(0.3),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                )
-                              ]
-                            : null,
-                      ),
-                      child: Stack(
-                        children: [
-                          Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  displayName,
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                    color: isLocked
-                                        ? theme.colorScheme.onSurface
-                                            .withOpacity(0.4)
-                                        : (isSelected ? Colors.white : color),
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (isLocked)
-                            Positioned(
-                              top: 0,
-                              right: 0,
-                              child: Icon(
-                                Icons.lock_outline,
-                                size: 14,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          if (isLocked)
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: _buildPremiumBadge(),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
             ),
           ),
         ],
