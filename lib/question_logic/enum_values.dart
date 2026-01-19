@@ -24,12 +24,24 @@ enum Range {
   additionBeginner1to5,
   additionBeginner6to10,
   additionBeginnerMixed1to10,
+  additionBeginnerPlus1,
+  additionBeginnerPlus2,
+  additionBeginnerPlus3,
+  additionBeginnerPlus4,
+  additionBeginnerPlus5,
+
   // Addition: Intermediate
   additionIntermediate10to20,
   additionIntermediate20to30,
   additionIntermediate30to40,
   additionIntermediate40to50,
   additionIntermediateMixed10to50,
+  additionIntermediatePlus6,
+  additionIntermediatePlus7,
+  additionIntermediatePlus8,
+  additionIntermediatePlus9,
+  additionIntermediatePlus10,
+
   // Addition: Advanced
   additionAdvanced50to100,
   additionAdvanced100to150,
@@ -37,63 +49,85 @@ enum Range {
   additionAdvanced100to200,
   additionAdvancedMixed50to200,
   additionAdvancedMixed1to200,
+
   // Subtraction: Beginner
   subtractionBeginner1to10,
   subtractionBeginner10to20,
   subtractionBeginnerMixed1to20,
+  subtractionBeginnerMinus1,
+  subtractionBeginnerMinus2,
+  subtractionBeginnerMinus3,
+  subtractionBeginnerMinus4,
+  subtractionBeginnerMinus5,
+
   // Subtraction: Intermediate
   subtractionIntermediate20to30,
   subtractionIntermediate30to40,
   subtractionIntermediate40to50,
   subtractionIntermediateMixed20to50,
+  subtractionIntermediateMinus6,
+  subtractionIntermediateMinus7,
+  subtractionIntermediateMinus8,
+  subtractionIntermediateMinus9,
+  subtractionIntermediateMinus10,
+
   // Subtraction: Advanced
   subtractionAdvanced50to100,
   subtractionAdvanced100to150,
   subtractionAdvanced150to200,
   subtractionAdvancedMixed50to200,
   subtractionAdvancedMixed1to200,
+
   // Multiplication: Beginner
   multiplicationBeginnerX2,
   multiplicationBeginnerX3,
   multiplicationBeginnerX4,
   multiplicationBeginnerX5,
   multiplicationBeginnerMixedX2toX5,
+
   // Multiplication: Intermediate
   multiplicationIntermediateX6,
   multiplicationIntermediateX7,
   multiplicationIntermediateX8,
   multiplicationIntermediateX9,
   multiplicationIntermediateMixedX6toX9,
+
   // Multiplication: Advanced
   multiplicationAdvancedX10,
   multiplicationAdvancedX11,
   multiplicationAdvancedX12,
   multiplicationAdvancedMixedX10toX12,
   multiplicationAdvancedMixedX2toX12,
+
   // Division: Beginner
   divisionBeginnerBy2,
   divisionBeginnerBy3,
   divisionBeginnerBy4,
   divisionBeginnerBy5,
   divisionBeginnerMixedBy2to5,
+
   // Division: Intermediate
   divisionIntermediateBy6,
   divisionIntermediateBy7,
   divisionIntermediateBy8,
   divisionIntermediateBy9,
   divisionIntermediateMixedBy6to9,
+
   // Division: Advanced
   divisionAdvancedMixedBy2to10,
+
   // LCM: Beginner
   lcmBeginnerUpto10,
   lcmBeginnerUpto20,
   lcmBeginnerMixedUpto20,
+
   // LCM: Intermediate
   lcmIntermediateUpto30,
   lcmIntermediateUpto40,
   lcmIntermediateUpto50,
   lcmIntermediateUpto60,
   lcmIntermediateMixedUpto60,
+
   // LCM: Advanced
   lcmAdvancedUpto70,
   lcmAdvancedUpto80,
@@ -106,16 +140,19 @@ enum Range {
   lcmAdvanced3NumbersUpto50,
   lcmAdvancedMixedUpto100,
   lcmAdvancedMixed3NumbersUpto50,
+
   // GCF: Beginner
   gcfBeginnerUpto10,
   gcfBeginnerUpto20,
   gcfBeginnerMixedUpto20,
+
   // GCF: Intermediate
   gcfIntermediateUpto30,
   gcfIntermediateUpto40,
   gcfIntermediateUpto50,
   gcfIntermediateUpto60,
   gcfIntermediateMixedUpto60,
+
   // GCF: Advanced
   gcfAdvancedUpto70,
   gcfAdvancedUpto80,
@@ -165,7 +202,7 @@ Range getDefaultRange(Operation operation) {
   }
 }
 
-  // Helper method to convert Range enum to display string
+// Helper method to convert Range enum to display string
 String getRangeDisplayName(Range range) {
   switch (range) {
     // Addition: Beginner
@@ -175,6 +212,17 @@ String getRangeDisplayName(Range range) {
       return '6-10';
     case Range.additionBeginnerMixed1to10:
       return 'Mixed (1-10)';
+    case Range.additionBeginnerPlus1:
+      return '+1';
+    case Range.additionBeginnerPlus2:
+      return '+2';
+    case Range.additionBeginnerPlus3:
+      return '+3';
+    case Range.additionBeginnerPlus4:
+      return '+4';
+    case Range.additionBeginnerPlus5:
+      return '+5';
+
     // Addition: Intermediate
     case Range.additionIntermediate10to20:
       return '10-20';
@@ -186,6 +234,17 @@ String getRangeDisplayName(Range range) {
       return '40-50';
     case Range.additionIntermediateMixed10to50:
       return 'Mixed (10-50)';
+    case Range.additionIntermediatePlus6:
+      return '+6';
+    case Range.additionIntermediatePlus7:
+      return '+7';
+    case Range.additionIntermediatePlus8:
+      return '+8';
+    case Range.additionIntermediatePlus9:
+      return '+9';
+    case Range.additionIntermediatePlus10:
+      return '+10';
+
     // Addition: Advanced
     case Range.additionAdvanced50to100:
       return '50-100';
@@ -199,6 +258,7 @@ String getRangeDisplayName(Range range) {
       return 'Mixed (50-200)';
     case Range.additionAdvancedMixed1to200:
       return 'Mixed (1-200)';
+
     // Subtraction: Beginner
     case Range.subtractionBeginner1to10:
       return '1-10';
@@ -206,6 +266,17 @@ String getRangeDisplayName(Range range) {
       return '10-20';
     case Range.subtractionBeginnerMixed1to20:
       return 'Mixed (1-20)';
+    case Range.subtractionBeginnerMinus1:
+      return '-1';
+    case Range.subtractionBeginnerMinus2:
+      return '-2';
+    case Range.subtractionBeginnerMinus3:
+      return '-3';
+    case Range.subtractionBeginnerMinus4:
+      return '-4';
+    case Range.subtractionBeginnerMinus5:
+      return '-5';
+
     // Subtraction: Intermediate
     case Range.subtractionIntermediate20to30:
       return '20-30';
@@ -215,6 +286,17 @@ String getRangeDisplayName(Range range) {
       return '40-50';
     case Range.subtractionIntermediateMixed20to50:
       return 'Mixed (20-50)';
+    case Range.subtractionIntermediateMinus6:
+      return '-6';
+    case Range.subtractionIntermediateMinus7:
+      return '-7';
+    case Range.subtractionIntermediateMinus8:
+      return '-8';
+    case Range.subtractionIntermediateMinus9:
+      return '-9';
+    case Range.subtractionIntermediateMinus10:
+      return '-10';
+
     // Subtraction: Advanced
     case Range.subtractionAdvanced50to100:
       return '50-100';
@@ -226,6 +308,7 @@ String getRangeDisplayName(Range range) {
       return 'Mixed (50-200)';
     case Range.subtractionAdvancedMixed1to200:
       return 'Mixed (1-200)';
+
     // Multiplication: Beginner
     case Range.multiplicationBeginnerX2:
       return 'x2';

@@ -9,6 +9,11 @@ List<DropdownMenuItem<Range>> getDropdownItems(Operation selectedOperation) {
         Range.additionBeginner1to5,
         Range.additionBeginner6to10,
         Range.additionBeginnerMixed1to10,
+        Range.additionBeginnerPlus1,
+        Range.additionBeginnerPlus2,
+        Range.additionBeginnerPlus3,
+        Range.additionBeginnerPlus4,
+        Range.additionBeginnerPlus5,
       ];
       break;
     case Operation.additionIntermediate:
@@ -18,6 +23,11 @@ List<DropdownMenuItem<Range>> getDropdownItems(Operation selectedOperation) {
         Range.additionIntermediate30to40,
         Range.additionIntermediate40to50,
         Range.additionIntermediateMixed10to50,
+        Range.additionIntermediatePlus6,
+        Range.additionIntermediatePlus7,
+        Range.additionIntermediatePlus8,
+        Range.additionIntermediatePlus9,
+        Range.additionIntermediatePlus10,
       ];
       break;
     case Operation.additionAdvanced:
@@ -35,6 +45,11 @@ List<DropdownMenuItem<Range>> getDropdownItems(Operation selectedOperation) {
         Range.subtractionBeginner1to10,
         Range.subtractionBeginner10to20,
         Range.subtractionBeginnerMixed1to20,
+        Range.subtractionBeginnerMinus1,
+        Range.subtractionBeginnerMinus2,
+        Range.subtractionBeginnerMinus3,
+        Range.subtractionBeginnerMinus4,
+        Range.subtractionBeginnerMinus5,
       ];
       break;
     case Operation.subtractionIntermediate:
@@ -43,6 +58,11 @@ List<DropdownMenuItem<Range>> getDropdownItems(Operation selectedOperation) {
         Range.subtractionIntermediate30to40,
         Range.subtractionIntermediate40to50,
         Range.subtractionIntermediateMixed20to50,
+        Range.subtractionIntermediateMinus6,
+        Range.subtractionIntermediateMinus7,
+        Range.subtractionIntermediateMinus8,
+        Range.subtractionIntermediateMinus9,
+        Range.subtractionIntermediateMinus10,
       ];
       break;
     case Operation.subtractionAdvanced:
