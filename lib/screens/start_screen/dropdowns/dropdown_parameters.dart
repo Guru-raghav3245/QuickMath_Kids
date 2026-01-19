@@ -6,28 +6,32 @@ List<DropdownMenuItem<Range>> getDropdownItems(Operation selectedOperation) {
   switch (selectedOperation) {
     case Operation.additionBeginner:
       ranges = [
-        Range.additionBeginner1to5,
-        Range.additionBeginner6to10,
-        Range.additionBeginnerMixed1to10,
+        // Specifics first
         Range.additionBeginnerPlus1,
         Range.additionBeginnerPlus2,
         Range.additionBeginnerPlus3,
         Range.additionBeginnerPlus4,
         Range.additionBeginnerPlus5,
+        // Ranges second
+        Range.additionBeginner1to5,
+        Range.additionBeginner6to10,
+        Range.additionBeginnerMixed1to10,
       ];
       break;
     case Operation.additionIntermediate:
       ranges = [
-        Range.additionIntermediate10to20,
-        Range.additionIntermediate20to30,
-        Range.additionIntermediate30to40,
-        Range.additionIntermediate40to50,
-        Range.additionIntermediateMixed10to50,
+        // Specifics first
         Range.additionIntermediatePlus6,
         Range.additionIntermediatePlus7,
         Range.additionIntermediatePlus8,
         Range.additionIntermediatePlus9,
         Range.additionIntermediatePlus10,
+        // Ranges second
+        Range.additionIntermediate10to20,
+        Range.additionIntermediate20to30,
+        Range.additionIntermediate30to40,
+        Range.additionIntermediate40to50,
+        Range.additionIntermediateMixed10to50,
       ];
       break;
     case Operation.additionAdvanced:
@@ -42,27 +46,31 @@ List<DropdownMenuItem<Range>> getDropdownItems(Operation selectedOperation) {
       break;
     case Operation.subtractionBeginner:
       ranges = [
-        Range.subtractionBeginner1to10,
-        Range.subtractionBeginner10to20,
-        Range.subtractionBeginnerMixed1to20,
+        // Specifics first
         Range.subtractionBeginnerMinus1,
         Range.subtractionBeginnerMinus2,
         Range.subtractionBeginnerMinus3,
         Range.subtractionBeginnerMinus4,
         Range.subtractionBeginnerMinus5,
+        // Ranges second
+        Range.subtractionBeginner1to10,
+        Range.subtractionBeginner10to20,
+        Range.subtractionBeginnerMixed1to20,
       ];
       break;
     case Operation.subtractionIntermediate:
       ranges = [
-        Range.subtractionIntermediate20to30,
-        Range.subtractionIntermediate30to40,
-        Range.subtractionIntermediate40to50,
-        Range.subtractionIntermediateMixed20to50,
+        // Specifics first
         Range.subtractionIntermediateMinus6,
         Range.subtractionIntermediateMinus7,
         Range.subtractionIntermediateMinus8,
         Range.subtractionIntermediateMinus9,
         Range.subtractionIntermediateMinus10,
+        // Ranges second
+        Range.subtractionIntermediate20to30,
+        Range.subtractionIntermediate30to40,
+        Range.subtractionIntermediate40to50,
+        Range.subtractionIntermediateMixed20to50,
       ];
       break;
     case Operation.subtractionAdvanced:

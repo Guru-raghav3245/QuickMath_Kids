@@ -259,16 +259,16 @@ class _OperationGridSheet extends StatelessWidget {
     switch (op) {
       // Addition
       case Operation.additionBeginner:
-        return 'Ranges & +1 to +5';
+        return '+1 to +5, 1-10';
       case Operation.additionIntermediate:
-        return 'Ranges & +6 to +10';
+        return '+6 to +10, 10-50';
       case Operation.additionAdvanced:
         return '50-200';
       // Subtraction
       case Operation.subtractionBeginner:
-        return 'Ranges & -1 to -5';
+        return '-1 to -5, 1-20';
       case Operation.subtractionIntermediate:
-        return 'Ranges & -6 to -10';
+        return '-6 to -10, 20-50';
       case Operation.subtractionAdvanced:
         return '50-200';
       // Multiplication
@@ -533,8 +533,6 @@ class RangeDropdown extends ConsumerWidget {
     Range.gcfIntermediateMixedUpto60,
     Range.gcfAdvancedUpto100,
     Range.gcfAdvancedMixedUpto100,
-    // Add specific number ranges to paid list if desired, e.g.:
-    // Range.additionIntermediatePlus10,
   };
 
   void _navigateToPurchaseScreen(BuildContext context) {
