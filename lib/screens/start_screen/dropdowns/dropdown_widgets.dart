@@ -442,6 +442,9 @@ class _OperationGridSheet extends StatelessWidget {
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
+                                      SizedBox(
+                                          width: double
+                                              .infinity), // Force max width
                                       Text(
                                         label,
                                         textAlign: TextAlign.center,
@@ -646,6 +649,7 @@ class RangeDropdown extends ConsumerWidget {
         items: items.map((item) {
           final range = item.value!;
           final isLocked = _paidRanges.contains(range) && !isPremium;
+          final isSelected = range == selectedRange;
 
           return DropdownMenuItem<Range>(
             value: range,
@@ -711,7 +715,14 @@ class RangeDropdown extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  if (isLocked) _buildPremiumBadge(),
+                  if (isLocked)
+                    _buildPremiumBadge()
+                  else if (isSelected)
+                    Icon(
+                      Icons.check_rounded,
+                      color: theme.colorScheme.primary,
+                      size: 20,
+                    ),
                 ],
               ),
             ),
