@@ -67,7 +67,7 @@ class OperationDropdown extends ConsumerWidget {
     return Icons.functions;
   }
 
-  Color _getDifficultyColor(Operation operation, ThemeData theme) {
+  Color _getDifficultyColor(Operation operation) {
     if (operation.name.contains('Beginner')) {
       return Colors.green;
     } else if (operation.name.contains('Intermediate')) {
@@ -77,124 +77,38 @@ class OperationDropdown extends ConsumerWidget {
     }
   }
 
+  void _showGridSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _OperationGridSheet(
+        selectedOperation: selectedOperation,
+        onSelect: (op) {
+          onChanged(op);
+          Navigator.pop(context);
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isTablet = MediaQuery.of(context).size.width > 600;
 
+    final displayName = _getDisplayName(selectedOperation);
+    final operationName = displayName.split(':')[0];
+    final difficultyName = displayName.split(':')[1].trim();
+    final difficultyColor = _getDifficultyColor(selectedOperation);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40.0),
-      child: DropdownButton2<Operation>(
-        value: selectedOperation,
-        hint: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Row(
-            children: [
-              Icon(Icons.tune_rounded,
-                  size: 22, color: theme.colorScheme.primary),
-              const SizedBox(width: 12),
-              Text(
-                'Select an operation',
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w500,
-                  fontSize: isTablet ? 18 : 16, // Increased font size
-                  color: theme.colorScheme.onSurface.withOpacity(0.7),
-                ),
-              ),
-            ],
-          ),
-        ),
-        items: Operation.values.map((operation) {
-          final difficultyColor = _getDifficultyColor(operation, theme);
-          final displayName = _getDisplayName(operation);
-          final operationName = displayName.split(':')[0];
-          final difficultyName = displayName.split(':')[1].trim();
-
-          return DropdownMenuItem<Operation>(
-            value: operation,
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8), // Increased padding
-              child: Row(
-                children: [
-                  Container(
-                    width: 36, // Slightly larger
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: difficultyColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border:
-                          Border.all(color: difficultyColor.withOpacity(0.3)),
-                    ),
-                    child: Icon(
-                      _getOperationIcon(operation),
-                      size: 18, // Larger icon
-                      color: difficultyColor,
-                    ),
-                  ),
-                  const SizedBox(width: 12), // Increased spacing
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          operationName,
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w600,
-                            fontSize: isTablet ? 16 : 14, // Increased font size
-                            color: theme.colorScheme.onSurface,
-                            height: 1.1, // Tighter line height for larger fonts
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 2), // Minimal spacing
-                        Text(
-                          difficultyName,
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w500,
-                            fontSize: isTablet ? 13 : 12, // Increased font size
-                            color: difficultyColor,
-                            height: 1.1,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 4), // Increased padding
-                    decoration: BoxDecoration(
-                      color: difficultyColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      operation.name.contains('Beginner')
-                          ? 'Easy'
-                          : operation.name.contains('Intermediate')
-                              ? 'Medium'
-                              : 'Hard',
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 11, // Increased font size
-                        color: difficultyColor,
-                        height: 1.0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }).toList(),
-        onChanged: onChanged,
-        isExpanded: true,
-        buttonStyleData: ButtonStyleData(
-          height: isTablet ? 65 : 55, // Increased height for larger fonts
+      child: InkWell(
+        onTap: () => _showGridSheet(context),
+        borderRadius: BorderRadius.circular(14),
+        child: Container(
+          height: isTablet ? 65 : 55,
           padding: EdgeInsets.symmetric(horizontal: isTablet ? 24 : 18),
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -218,52 +132,285 @@ class OperationDropdown extends ConsumerWidget {
               ),
             ],
           ),
-          elevation: 0,
-        ),
-        iconStyleData: IconStyleData(
-          icon: Icon(
-            Icons.arrow_drop_down_rounded,
-            color: theme.colorScheme.primary,
-          ),
-          iconSize: 26, // Slightly larger
-          iconEnabledColor: theme.colorScheme.primary,
-          iconDisabledColor: theme.colorScheme.onSurface.withOpacity(0.3),
-        ),
-        dropdownStyleData: DropdownStyleData(
-          maxHeight: MediaQuery.of(context).size.height *
-              0.35, // Limit height to avoid system nav overlap
-          width: MediaQuery.of(context).size.width - 80,
-          padding: const EdgeInsets.symmetric(vertical: 8), // Increased padding
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            color: theme.colorScheme.surface,
-            boxShadow: [
-              BoxShadow(
-                color: theme.colorScheme.shadow.withOpacity(0.15),
-                blurRadius: 15,
-                offset: const Offset(0, 5),
+          child: Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: difficultyColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: difficultyColor.withOpacity(0.3)),
+                ),
+                child: Icon(
+                  _getOperationIcon(selectedOperation),
+                  size: 18,
+                  color: difficultyColor,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      operationName,
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: isTablet ? 16 : 14,
+                        color: theme.colorScheme.onSurface,
+                        height: 1.1,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      difficultyName,
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w500,
+                        fontSize: isTablet ? 13 : 12,
+                        color: difficultyColor,
+                        height: 1.1,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(
+                Icons.arrow_drop_down_rounded,
+                color: theme.colorScheme.primary,
+                size: 26,
               ),
             ],
-            border: Border.all(
-              color: theme.colorScheme.outline.withOpacity(0.1),
-              width: 1,
-            ),
-          ),
-          offset: const Offset(0, -6),
-          scrollbarTheme: ScrollbarThemeData(
-            radius: const Radius.circular(40),
-            thickness: MaterialStateProperty.all(4),
-            thumbVisibility: MaterialStateProperty.all(true),
-            thumbColor: MaterialStateProperty.all(
-              theme.colorScheme.primary.withOpacity(0.5),
-            ),
           ),
         ),
-        menuItemStyleData: MenuItemStyleData(
-          height: 56, // Increased height for larger fonts
-          padding: EdgeInsets.symmetric(horizontal: isTablet ? 18 : 14),
-        ),
-        underline: const SizedBox(),
+      ),
+    );
+  }
+}
+
+class _OperationGridSheet extends StatelessWidget {
+  final Operation selectedOperation;
+  final ValueChanged<Operation> onSelect;
+
+  const _OperationGridSheet({
+    required this.selectedOperation,
+    required this.onSelect,
+  });
+
+  static const Map<String, List<Operation>> _operationGroups = {
+    'Addition': [
+      Operation.additionBeginner,
+      Operation.additionIntermediate,
+      Operation.additionAdvanced
+    ],
+    'Subtraction': [
+      Operation.subtractionBeginner,
+      Operation.subtractionIntermediate,
+      Operation.subtractionAdvanced
+    ],
+    'Multiplication': [
+      Operation.multiplicationBeginner,
+      Operation.multiplicationIntermediate,
+      Operation.multiplicationAdvanced
+    ],
+    'Division': [
+      Operation.divisionBeginner,
+      Operation.divisionIntermediate,
+      Operation.divisionAdvanced
+    ],
+    'LCM': [
+      Operation.lcmBeginner,
+      Operation.lcmIntermediate,
+      Operation.lcmAdvanced
+    ],
+    'GCF': [
+      Operation.gcfBeginner,
+      Operation.gcfIntermediate,
+      Operation.gcfAdvanced
+    ],
+  };
+
+  IconData _getGroupIcon(String group) {
+    switch (group) {
+      case 'Addition':
+        return Icons.add_circle_outline;
+      case 'Subtraction':
+        return Icons.remove_circle_outline;
+      case 'Multiplication':
+        return Icons.cancel_outlined;
+      case 'Division':
+        return Icons.percent;
+      case 'LCM':
+        return Icons.filter_1;
+      case 'GCF':
+        return Icons.filter_center_focus;
+      default:
+        return Icons.functions;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isTablet = MediaQuery.of(context).size.width > 600;
+
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.85,
+      ),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 10,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Handle Bar
+          Container(
+            margin: const EdgeInsets.only(top: 12, bottom: 8),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.onSurface.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          // Title
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Text(
+              'Select Operation',
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onSurface,
+              ),
+            ),
+          ),
+          Divider(height: 1, color: theme.dividerColor.withOpacity(0.5)),
+          // Grid Content
+          Flexible(
+            child: ListView.separated(
+              padding: const EdgeInsets.all(20),
+              itemCount: _operationGroups.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 24),
+              itemBuilder: (context, index) {
+                final groupName = _operationGroups.keys.elementAt(index);
+                final operations = _operationGroups[groupName]!;
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          _getGroupIcon(groupName),
+                          size: 20,
+                          color: theme.colorScheme.primary,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          groupName,
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: operations.asMap().entries.map((entry) {
+                        final op = entry.value;
+                        final isSelected = op == selectedOperation;
+                        final difficultyIndex =
+                            entry.key; // 0=Easy, 1=Med, 2=Hard
+
+                        // Define colors based on difficulty
+                        Color color;
+                        String label;
+                        if (difficultyIndex == 0) {
+                          color = Colors.green;
+                          label = 'Easy';
+                        } else if (difficultyIndex == 1) {
+                          color = Colors.orange;
+                          label = 'Medium';
+                        } else {
+                          color = Colors.red;
+                          label = 'Hard';
+                        }
+
+                        return Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                left: difficultyIndex == 0 ? 0 : 6,
+                                right: difficultyIndex == 2 ? 0 : 6),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () => onSelect(op),
+                                borderRadius: BorderRadius.circular(10),
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? color
+                                        : color.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? color
+                                          : color.withOpacity(0.3),
+                                      width: 1.5,
+                                    ),
+                                    boxShadow: isSelected
+                                        ? [
+                                            BoxShadow(
+                                              color: color.withOpacity(0.3),
+                                              blurRadius: 4,
+                                              offset: const Offset(0, 2),
+                                            )
+                                          ]
+                                        : null,
+                                  ),
+                                  child: Text(
+                                    label,
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: isSelected ? Colors.white : color,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
