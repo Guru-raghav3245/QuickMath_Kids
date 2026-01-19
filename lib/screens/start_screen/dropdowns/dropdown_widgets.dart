@@ -255,6 +255,53 @@ class _OperationGridSheet extends StatelessWidget {
     }
   }
 
+  String _getSummary(Operation op) {
+    switch (op) {
+      // Addition
+      case Operation.additionBeginner:
+        return '1-10';
+      case Operation.additionIntermediate:
+        return '10-50';
+      case Operation.additionAdvanced:
+        return '50-200';
+      // Subtraction
+      case Operation.subtractionBeginner:
+        return '1-20';
+      case Operation.subtractionIntermediate:
+        return '20-50';
+      case Operation.subtractionAdvanced:
+        return '50-200';
+      // Multiplication
+      case Operation.multiplicationBeginner:
+        return 'x2-x5';
+      case Operation.multiplicationIntermediate:
+        return 'x6-x9';
+      case Operation.multiplicationAdvanced:
+        return 'x10-x12';
+      // Division
+      case Operation.divisionBeginner:
+        return '÷2-÷5';
+      case Operation.divisionIntermediate:
+        return '÷6-÷9';
+      case Operation.divisionAdvanced:
+        return '÷2-÷10';
+      // LCM
+      case Operation.lcmBeginner:
+        return 'Max 20';
+      case Operation.lcmIntermediate:
+        return 'Max 60';
+      case Operation.lcmAdvanced:
+        return 'Max 100';
+      // GCF
+      case Operation.gcfBeginner:
+        return 'Max 20';
+      case Operation.gcfIntermediate:
+        return 'Max 60';
+      case Operation.gcfAdvanced:
+        return 'Max 100';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -338,21 +385,24 @@ class _OperationGridSheet extends StatelessWidget {
                         final op = entry.value;
                         final isSelected = op == selectedOperation;
                         final difficultyIndex =
-                            entry.key; // 0=Easy, 1=Med, 2=Hard
+                            entry.key; // 0=Beg, 1=Int, 2=Adv
 
                         // Define colors based on difficulty
                         Color color;
                         String label;
                         if (difficultyIndex == 0) {
                           color = Colors.green;
-                          label = 'Easy';
+                          label = 'Beginner';
                         } else if (difficultyIndex == 1) {
                           color = Colors.orange;
-                          label = 'Medium';
+                          label = 'Intermediate';
                         } else {
                           color = Colors.red;
-                          label = 'Hard';
+                          label = 'Advanced';
                         }
+
+                        // Short summary mapping
+                        String summary = _getSummary(op);
 
                         return Expanded(
                           child: Padding(
@@ -367,11 +417,11 @@ class _OperationGridSheet extends StatelessWidget {
                                 child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 200),
                                   padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
+                                      const EdgeInsets.symmetric(vertical: 8),
                                   decoration: BoxDecoration(
                                     color: isSelected
                                         ? color
-                                        : color.withOpacity(0.1),
+                                        : color.withOpacity(0.05),
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(
                                       color: isSelected
@@ -389,14 +439,36 @@ class _OperationGridSheet extends StatelessWidget {
                                           ]
                                         : null,
                                   ),
-                                  child: Text(
-                                    label,
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                      color: isSelected ? Colors.white : color,
-                                    ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        label,
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w600,
+                                          color:
+                                              isSelected ? Colors.white : color,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        summary,
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.w500,
+                                          color: isSelected
+                                              ? Colors.white.withOpacity(0.9)
+                                              : color.withOpacity(0.8),
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
