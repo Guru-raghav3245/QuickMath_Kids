@@ -18,18 +18,9 @@ class _NotificationDemoState extends State<NotificationDemo> {
   TimeOfDay _selectedTime = TimeOfDay.now();
   List<PendingNotificationRequest> _pendingNotifications = [];
 
-  // List of motivational messages focused on daily practice and self-motivation
+  // Updated message to specifically remind the user of their scheduled practice time
   final List<String> _motivationalMessages = [
-    'Practice daily to master your skills!',
-    'Push yourself to practice today—you can do it!',
-    'You’ve got the power to excel—keep practicing!',
-    'Every practice session brings you closer to mastery!',
-    'Stay committed to your daily practice!',
-    'Challenge yourself with today’s practice!',
-    'Believe in yourself and practice every day!',
-    'Your daily effort is the key to success!',
-    'Keep practicing—you’re unstoppable!',
-    'One practice a day keeps progress on its way!',
+    "It's time! You set this reminder to practice math now.",
   ];
 
   @override
@@ -69,6 +60,8 @@ class _NotificationDemoState extends State<NotificationDemo> {
   }
 
   String _getRandomMotivationalMessage() {
+    // Since we now have a specific message, this will return that message.
+    // Keeping the logic flexible in case you want to add variations later.
     final random = Random();
     return _motivationalMessages[random.nextInt(_motivationalMessages.length)];
   }
@@ -113,7 +106,7 @@ class _NotificationDemoState extends State<NotificationDemo> {
     try {
       await flutterLocalNotificationsPlugin.zonedSchedule(
         notificationId,
-        'Daily Motivation',
+        'Math Practice Time', // Updated title to match the context
         motivationalMessage,
         tzScheduledDate,
         notificationDetails,
@@ -125,7 +118,7 @@ class _NotificationDemoState extends State<NotificationDemo> {
       await _loadPendingNotifications();
 
       _showSuccessDialog(
-        'Daily motivational reminder set for ${_selectedTime.format(context)}',
+        'Daily practice reminder set for ${_selectedTime.format(context)}',
       );
     } catch (e) {
       _showErrorDialog('Error scheduling notification: $e');
@@ -148,7 +141,7 @@ class _NotificationDemoState extends State<NotificationDemo> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: Theme.of(context).colorScheme.primary, // Kumon blue
+              primary: Theme.of(context).colorScheme.primary,
               onPrimary: Colors.white,
               surface: Colors.white,
               onSurface: Colors.black,
@@ -292,12 +285,14 @@ class _NotificationDemoState extends State<NotificationDemo> {
                               Icon(Icons.star,
                                   color: Colors.amber[400], size: 36),
                               const SizedBox(width: 12),
-                              Text(
-                                'Stay Motivated!',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: theme.colorScheme.primary,
+                              Expanded(
+                                child: Text(
+                                  'Stay Motivated!',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: theme.colorScheme.primary,
+                                  ),
                                 ),
                               ),
                             ],
@@ -449,8 +444,8 @@ class _NotificationDemoState extends State<NotificationDemo> {
                                 style: GoogleFonts.poppins(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,
-                                  color:
-                                      theme.colorScheme.onSurface.withOpacity(0.7),
+                                  color: theme.colorScheme.onSurface
+                                      .withOpacity(0.7),
                                 ),
                               ),
                             ),
@@ -474,10 +469,11 @@ class _NotificationDemoState extends State<NotificationDemo> {
                               child: ListTile(
                                 leading: CircleAvatar(
                                   radius: 24,
-                                  backgroundColor:
-                                      theme.colorScheme.primary.withOpacity(0.1),
+                                  backgroundColor: theme.colorScheme.primary
+                                      .withOpacity(0.1),
                                   child: Icon(Icons.notifications,
-                                      color: theme.colorScheme.primary, size: 28),
+                                      color: theme.colorScheme.primary,
+                                      size: 28),
                                 ),
                                 title: Text(
                                   'Daily at ${TimeOfDay.fromDateTime(scheduledTime).format(context)}',
