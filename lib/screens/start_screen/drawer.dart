@@ -10,7 +10,7 @@ import 'package:QuickMath_Kids/services/billing_service.dart';
 import 'package:QuickMath_Kids/screens/purchase_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:QuickMath_Kids/app_theme.dart';
-import 'package:package_info_plus/package_info_plus.dart'; //
+import 'package:package_info_plus/package_info_plus.dart';
 
 class AppDrawer extends ConsumerWidget {
   final BillingService billingService;
@@ -60,13 +60,12 @@ class AppDrawer extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  // FutureBuilder to display the version number
                   FutureBuilder<PackageInfo>(
                     future: PackageInfo.fromPlatform(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Text(
-                          'Version: ${snapshot.data!.version}', // Changed from packageName to version
+                          'Version: ${snapshot.data!.version}',
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: theme.colorScheme.onPrimary.withOpacity(0.8),
                             fontSize: 12,
@@ -79,21 +78,23 @@ class AppDrawer extends ConsumerWidget {
                 ],
               ),
             ),
-            _buildDrawerItem(
-              context: context,
-              icon: Icons.help_outline,
-              iconColor: Colors.grey,
-              title: 'FAQ',
-              onTap: () => _navigateTo(context, FAQScreen()),
-              backgroundColor: theme.colorScheme.surface,
-              isDarkMode: isDarkMode,
-            ),
+            // MOVED UP: How to use?
             _buildDrawerItem(
               context: context,
               icon: Icons.info_outline,
               iconColor: Colors.grey,
               title: 'How to use?',
-              onTap: () => _navigateTo(context, HowToUseScreen()),
+              onTap: () => _navigateTo(context, const HowToUseScreen()),
+              backgroundColor: theme.colorScheme.surface,
+              isDarkMode: isDarkMode,
+            ),
+            // MOVED DOWN: FAQ
+            _buildDrawerItem(
+              context: context,
+              icon: Icons.help_outline,
+              iconColor: Colors.grey,
+              title: 'FAQ',
+              onTap: () => _navigateTo(context, const FAQScreen()),
               backgroundColor: theme.colorScheme.surface,
               isDarkMode: isDarkMode,
             ),
@@ -102,7 +103,7 @@ class AppDrawer extends ConsumerWidget {
               icon: Icons.notifications_none,
               iconColor: Colors.grey,
               title: 'Notifications',
-              onTap: () => _navigateTo(context, NotificationDemo()),
+              onTap: () => _navigateTo(context, const NotificationDemo()),
               backgroundColor: theme.colorScheme.surface,
               isDarkMode: isDarkMode,
             ),
@@ -121,8 +122,11 @@ class AppDrawer extends ConsumerWidget {
               icon: Icons.history,
               title: 'Wrong Answers History',
               isPremiumRequired: !isPremium,
-              onTap: () => _navigateTo(context,
-                  isPremium ? WrongAnswersScreen() : const PurchaseScreen()),
+              onTap: () => _navigateTo(
+                  context,
+                  isPremium
+                      ? const WrongAnswersScreen()
+                      : const PurchaseScreen()),
               backgroundColor: theme.colorScheme.surface,
               isDarkMode: isDarkMode,
             ),
@@ -131,8 +135,11 @@ class AppDrawer extends ConsumerWidget {
               icon: Icons.history_toggle_off,
               title: 'Quiz History',
               isPremiumRequired: !isPremium,
-              onTap: () => _navigateTo(context,
-                  isPremium ? QuizHistoryScreen() : const PurchaseScreen()),
+              onTap: () => _navigateTo(
+                  context,
+                  isPremium
+                      ? const QuizHistoryScreen()
+                      : const PurchaseScreen()),
               backgroundColor: theme.colorScheme.surface,
               isDarkMode: isDarkMode,
             ),
@@ -140,7 +147,7 @@ class AppDrawer extends ConsumerWidget {
               context: context,
               icon: Icons.support_agent,
               title: 'Get Support',
-              onTap: () => _navigateTo(context, SupportScreen()),
+              onTap: () => _navigateTo(context, const SupportScreen()),
               backgroundColor: theme.colorScheme.error.withOpacity(0.2),
               iconColor: theme.colorScheme.error,
               textStyle: const TextStyle(fontWeight: FontWeight.bold),

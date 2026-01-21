@@ -192,33 +192,34 @@ class _StartScreenState extends ConsumerState<StartScreen> {
                           size: 28,
                         ),
                         const SizedBox(width: 12),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              remaining == -1
-                                  ? 'Premium Member'
-                                  : 'Daily Quizzes',
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                                color: theme.colorScheme.onSurfaceVariant,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                remaining == -1
+                                    ? 'Premium Member'
+                                    : 'Daily Quizzes',
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
                               ),
-                            ),
-                            Text(
-                              remaining == -1
-                                  ? 'Unlimited Access'
-                                  : '${remaining.toString()}/$_freeUserDailyLimit remaining',
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                                color: statusColor,
+                              Text(
+                                remaining == -1
+                                    ? 'Unlimited Access'
+                                    : '${remaining.toString()}/$_freeUserDailyLimit remaining',
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  color: statusColor,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         if (remaining != -1 && remaining <= 1) ...[
-                          const Spacer(),
                           IconButton(
                             icon: Icon(Icons.arrow_forward_rounded,
                                 color: theme.colorScheme.primary),

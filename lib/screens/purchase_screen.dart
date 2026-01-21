@@ -11,7 +11,6 @@ class PurchaseScreen extends ConsumerStatefulWidget {
   _PurchaseScreenState createState() => _PurchaseScreenState();
 }
 
-// Added WidgetsBindingObserver to keep the UI in sync with external Play Store changes
 class _PurchaseScreenState extends ConsumerState<PurchaseScreen>
     with WidgetsBindingObserver {
   bool _isPurchasing = false;
@@ -19,20 +18,17 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen>
   @override
   void initState() {
     super.initState();
-    // Register observer to listen for app resume
     WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    // Unregister observer
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // When the user comes back to the app after redeeming a code in Play Store
     if (state == AppLifecycleState.resumed) {
       debugPrint('PurchaseScreen: App resumed, refreshing premium status...');
       ref.read(billingServiceProvider).restorePurchase();
@@ -88,12 +84,14 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen>
                               Icon(Icons.star,
                                   color: Colors.amber[400], size: 36),
                               const SizedBox(width: 12),
-                              Text(
-                                'Go Premium!',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: theme.colorScheme.primary,
+                              Expanded(
+                                child: Text(
+                                  'Go Premium!',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: theme.colorScheme.primary,
+                                  ),
                                 ),
                               ),
                             ],
@@ -109,6 +107,14 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen>
                             ),
                           ),
                           const SizedBox(height: 24),
+                          // NEW: Unlimited Quizzes
+                          _buildFeatureTile(
+                            context,
+                            icon: Icons.all_inclusive,
+                            title: 'Unlimited Daily Quizzes',
+                            description:
+                                'Practice as much as you want! Free users are limited to 3 quizzes per day.',
+                          ),
                           _buildFeatureTile(
                             context,
                             icon: Icons.history,
@@ -123,12 +129,20 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen>
                             description:
                                 'Track your past quiz performances to monitor progress.',
                           ),
+                          // NEW: Custom Time Limits
+                          _buildFeatureTile(
+                            context,
+                            icon: Icons.timer,
+                            title: 'Custom Time Limits',
+                            description:
+                                'Set your own practice duration or choose "No Time Limit" mode.',
+                          ),
                           _buildFeatureTile(
                             context,
                             icon: Icons.settings,
                             title: 'Advanced Settings',
                             description:
-                                'Customize your learning experience with premium settings options.',
+                                'Customize your learning experience with voice settings.',
                           ),
                           _buildFeatureTile(
                             context,
@@ -323,10 +337,13 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen>
                   Icon(Icons.card_giftcard,
                       color: theme.colorScheme.primary, size: 28),
                   const SizedBox(width: 12),
-                  Text(
-                    'Redeem Promo Code',
-                    style: GoogleFonts.poppins(
-                        fontSize: 20, fontWeight: FontWeight.w600),
+                  // FIXED: Wrapped Text in Expanded to prevent overflow
+                  Expanded(
+                    child: Text(
+                      'Redeem Promo Code',
+                      style: GoogleFonts.poppins(
+                          fontSize: 20, fontWeight: FontWeight.w600),
+                    ),
                   ),
                 ],
               ),
