@@ -17,20 +17,29 @@ class ResultRowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start, // Align top if text wraps
       children: [
         Icon(icon, color: Colors.blue[700]),
         const SizedBox(width: 10),
-        Text(
-          '$label ',
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: Colors.grey[800],
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        Text(
-          value,
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: Colors.grey[900],
+        Expanded(
+          child: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: '$label ',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: Colors.grey[800],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                TextSpan(
+                  text: value,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: Colors.grey[900],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

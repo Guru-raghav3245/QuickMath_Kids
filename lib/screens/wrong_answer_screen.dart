@@ -226,12 +226,16 @@ class _WrongAnswersScreenState extends State<WrongAnswersScreen> {
                                       size: 16,
                                       color: theme.colorScheme.primary),
                                   const SizedBox(width: 8),
-                                  Text(
-                                    question['category'] ?? 'Unknown category',
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 14,
-                                      color: theme.colorScheme.primary,
+                                  // FIXED: Added Expanded to prevent overflow
+                                  Expanded(
+                                    child: Text(
+                                      question['category'] ??
+                                          'Unknown category',
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                        color: theme.colorScheme.primary,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -251,12 +255,15 @@ class _WrongAnswersScreenState extends State<WrongAnswersScreen> {
                                   Icon(Icons.close,
                                       color: theme.colorScheme.error, size: 16),
                                   const SizedBox(width: 8),
-                                  Text(
-                                    'Your answer: ${question['userAnswer'] ?? 'N/A'}',
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 14,
-                                      color: theme.colorScheme.error,
+                                  // FIXED: Added Expanded
+                                  Expanded(
+                                    child: Text(
+                                      'Your answer: ${question['userAnswer'] ?? 'N/A'}',
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14,
+                                        color: theme.colorScheme.error,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -268,12 +275,15 @@ class _WrongAnswersScreenState extends State<WrongAnswersScreen> {
                                       color: theme.colorScheme.primary,
                                       size: 16),
                                   const SizedBox(width: 8),
-                                  Text(
-                                    'Correct answer: ${question['correctAnswer'] ?? 'N/A'}',
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 14,
-                                      color: theme.colorScheme.primary,
+                                  // FIXED: Added Expanded
+                                  Expanded(
+                                    child: Text(
+                                      'Correct answer: ${question['correctAnswer'] ?? 'N/A'}',
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14,
+                                        color: theme.colorScheme.primary,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -284,12 +294,15 @@ class _WrongAnswersScreenState extends State<WrongAnswersScreen> {
                                   Icon(Icons.star,
                                       color: Colors.yellow[700], size: 16),
                                   const SizedBox(width: 8),
-                                  Text(
-                                    'Times answered correctly: ${question['correctCount'] ?? 0}',
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 14,
-                                      color: Colors.yellow[700],
+                                  // FIXED: Added Expanded
+                                  Expanded(
+                                    child: Text(
+                                      'Times answered correctly: ${question['correctCount'] ?? 0}',
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14,
+                                        color: Colors.yellow[700],
+                                      ),
                                     ),
                                   ),
                                 ],
