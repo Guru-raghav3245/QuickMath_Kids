@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:QuickMath_Kids/question_logic/enum_values.dart';
+import 'package:quickmath_kids/question_logic/enum_values.dart';
 
 List<DropdownMenuItem<Range>> getDropdownItems(Operation selectedOperation) {
   List<Range> ranges;

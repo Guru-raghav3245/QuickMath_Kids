@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:QuickMath_Kids/screens/result_screen/result_row.dart';
-import 'package:QuickMath_Kids/screens/result_screen/pdf_sharing.dart';
-import 'package:QuickMath_Kids/services/quiz_history_service.dart';
-import 'package:QuickMath_Kids/question_logic/enum_values.dart';
-import 'package:QuickMath_Kids/screens/start_screen/start_screen.dart';
+import 'package:quickmath_kids/screens/result_screen/result_row.dart';
+import 'package:quickmath_kids/screens/result_screen/pdf_sharing.dart';
+import 'package:quickmath_kids/services/quiz_history_service.dart';
+import 'package:quickmath_kids/question_logic/enum_values.dart';
+import 'package:quickmath_kids/screens/start_screen/start_screen.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';

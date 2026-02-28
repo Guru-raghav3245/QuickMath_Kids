@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:QuickMath_Kids/screens/start_screen/start_screen.dart';
+import 'package:quickmath_kids/screens/start_screen/start_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:upgrader/upgrader.dart';
 import 'app_theme.dart';
-import 'package:QuickMath_Kids/services/billing_service.dart';
+import 'package:quickmath_kids/services/billing_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final container = ProviderContainer();
-
-  // Pre-initialize BillingService to start loading cached status immediately
   container.read(billingServiceProvider);
 
   SystemChrome.setPreferredOrientations([

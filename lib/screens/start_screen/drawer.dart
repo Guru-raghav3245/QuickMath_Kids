@@ -1,15 +1,15 @@
-import 'package:QuickMath_Kids/screens/notifications_scheduler.dart';
+import 'package:quickmath_kids/screens/notifications_scheduler.dart';
 import 'package:flutter/material.dart';
-import 'package:QuickMath_Kids/screens/support_screen.dart';
-import 'package:QuickMath_Kids/screens/settings_screen.dart';
-import 'package:QuickMath_Kids/screens/faq/faq_screen.dart';
-import 'package:QuickMath_Kids/screens/how_to_use_screen.dart';
-import 'package:QuickMath_Kids/screens/wrong_answer_screen.dart';
-import 'package:QuickMath_Kids/screens/quiz_history_screen.dart';
-import 'package:QuickMath_Kids/services/billing_service.dart';
-import 'package:QuickMath_Kids/screens/purchase_screen.dart';
+import 'package:quickmath_kids/screens/support_screen.dart';
+import 'package:quickmath_kids/screens/settings_screen.dart';
+import 'package:quickmath_kids/screens/faq/faq_screen.dart';
+import 'package:quickmath_kids/screens/how_to_use_screen.dart';
+import 'package:quickmath_kids/screens/wrong_answer_screen.dart';
+import 'package:quickmath_kids/screens/quiz_history_screen.dart';
+import 'package:quickmath_kids/services/billing_service.dart';
+import 'package:quickmath_kids/screens/purchase_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:QuickMath_Kids/app_theme.dart';
+import 'package:quickmath_kids/app_theme.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class AppDrawer extends ConsumerWidget {

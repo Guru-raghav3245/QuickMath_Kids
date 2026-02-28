@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:QuickMath_Kids/services/billing_service.dart';
+import 'package:quickmath_kids/services/billing_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final darkModeProvider = StateNotifierProvider<DarkModeNotifier, bool>((ref) {

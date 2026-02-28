@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:QuickMath_Kids/question_logic/enum_values.dart';
+import 'package:quickmath_kids/question_logic/enum_values.dart';
 
 class QuizHistoryService {
   static const String _key = 'quiz_history';

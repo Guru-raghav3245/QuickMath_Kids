@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:QuickMath_Kids/question_logic/tts_translator.dart';
+import 'package:quickmath_kids/question_logic/tts_translator.dart';
 
 final volumeProvider = StateProvider<double>((ref) => 1.0);
 final pitchProvider = StateProvider<double>((ref) => 1.0);

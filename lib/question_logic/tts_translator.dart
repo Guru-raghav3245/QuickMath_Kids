@@ -1,6 +1,6 @@
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:QuickMath_Kids/screens/settings_screen.dart'; 
+import 'package:quickmath_kids/screens/settings_screen.dart'; 
 class TTSService {
   final FlutterTts _flutterTts = FlutterTts();
   Future<void> speak(String text, WidgetRef ref) async {

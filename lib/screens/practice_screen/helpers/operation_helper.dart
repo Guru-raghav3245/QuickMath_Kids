@@ -1,4 +1,4 @@
-import 'package:QuickMath_Kids/question_logic/enum_values.dart';
+import 'package:quickmath_kids/question_logic/enum_values.dart';
 
 class OperatorHelper {
   static String getOperatorSymbol(Operation operation) {

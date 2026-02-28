@@ -1,8 +1,8 @@
-import 'package:QuickMath_Kids/question_logic/enum_values.dart';
+import 'package:quickmath_kids/question_logic/enum_values.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/quiz_history_service.dart';
-import 'package:QuickMath_Kids/screens/result_screen/result_screen.dart';
+import 'package:quickmath_kids/screens/result_screen/result_screen.dart';
 
 class QuizHistoryScreen extends StatefulWidget {
   const QuizHistoryScreen({super.key});

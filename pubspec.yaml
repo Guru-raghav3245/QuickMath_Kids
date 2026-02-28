@@ -1,8 +1,8 @@
-name: QuickMath_Kids
+name: quickmath_kids
 description: ""
 publish_to: 'none'
 
-version: 3.2.2+20
+version: 3.2.4+22
 
 environment:
   sdk: ^3.5.2
@@ -31,6 +31,7 @@ dependencies:
   upgrader: ^12.3.0
   in_app_purchase_android: ^0.4.0+8
   package_info_plus: ^9.0.0
+  change_app_package_name: ^1.5.0
 
 dev_dependencies:
   flutter_test:

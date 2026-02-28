@@ -1,4 +1,4 @@
-import 'package:QuickMath_Kids/question_logic/enum_values.dart';
+import 'package:quickmath_kids/question_logic/enum_values.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TTSHelper {
