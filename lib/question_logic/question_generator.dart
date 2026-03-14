@@ -519,9 +519,12 @@ class QuestionGenerator {
           default:
             maxLimit = 10;
         }
-        num1 = random.nextInt(maxLimit) + 1;
-        num2 = random.nextInt(maxLimit) + 1;
-        correctAnswer = calculateGCF(num1, num2);
+        // FIXED: Never generate GCF = 1
+        do {
+          num1 = random.nextInt(maxLimit) + 1;
+          num2 = random.nextInt(maxLimit) + 1;
+          correctAnswer = calculateGCF(num1, num2);
+        } while (correctAnswer == 1);
         break;
     }
 

@@ -2,7 +2,7 @@ name: quickmath_kids
 description: ""
 publish_to: 'none'
 
-version: 3.2.4+22
+version: 3.3.0+23
 
 environment:
   sdk: ^3.5.2
