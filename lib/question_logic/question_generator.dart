@@ -519,15 +519,25 @@ class QuestionGenerator {
           default:
             maxLimit = 10;
         }
-        // FIXED: Never generate GCF = 1
+
+        // NEW: Smart GCF generation — no more 2s and 3s dominating!
+        // GCF values are now spread evenly from 2 up to maxLimit/2.
+        // You will regularly see challenging answers like 5, 10, 15, 25, 47, 50 etc.
+        int d; // the actual GCF
+        int m1, m2; // coprime multipliers
+        int maxMult;
         do {
-          num1 = random.nextInt(maxLimit) + 1;
-          num2 = random.nextInt(maxLimit) + 1;
-          correctAnswer = calculateGCF(num1, num2);
-        } while (correctAnswer == 1);
+          d = random.nextInt((maxLimit ~/ 2) - 1) + 2; // 2 to maxLimit/2
+          maxMult = maxLimit ~/ d;
+          m1 = random.nextInt(maxMult) + 1; // 1 to maxMult
+          m2 = random.nextInt(maxMult) + 1;
+        } while (calculateGCF(m1, m2) != 1 || m1 == m2);
+
+        num1 = m1 * d;
+        num2 = m2 * d;
+        correctAnswer = d;
         break;
     }
-
     return num3 != 0
         ? [num1, num2, num3, correctAnswer]
         : [num1, num2, correctAnswer];
