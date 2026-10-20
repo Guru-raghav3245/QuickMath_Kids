@@ -9,7 +9,7 @@ Widget buildPauseButton(VoidCallback onPressed, BuildContext context) {
 
   final size = isTablet ? screenWidth * 0.12 : 48 * adjustedScale;
 
-  return Container(
+  return SizedBox(
     width: size,
     height: size,
     child: ElevatedButton(

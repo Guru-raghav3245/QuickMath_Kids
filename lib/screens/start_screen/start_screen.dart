@@ -153,19 +153,19 @@ class _StartScreenState extends ConsumerState<StartScreen> {
             if (snapshot.hasData) {
               final remaining = snapshot.data!;
               Color statusColor;
-              IconData _statusIcon;
+              IconData statusIcon;
               if (remaining == -1) {
                 statusColor = Colors.green;
-                _statusIcon = Icons.star;
+                statusIcon = Icons.star;
               } else if (remaining == 0) {
                 statusColor = theme.colorScheme.error;
-                _statusIcon = Icons.lock;
+                statusIcon = Icons.lock;
               } else if (remaining <= 1) {
                 statusColor = Colors.orange;
-                _statusIcon = Icons.warning;
+                statusIcon = Icons.warning;
               } else {
                 statusColor = theme.colorScheme.primary;
-                _statusIcon = Icons.check_circle;
+                statusIcon = Icons.check_circle;
               }
 
               return Padding(
@@ -187,7 +187,7 @@ class _StartScreenState extends ConsumerState<StartScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          _statusIcon,
+                          statusIcon,
                           color: statusColor,
                           size: 28,
                         ),

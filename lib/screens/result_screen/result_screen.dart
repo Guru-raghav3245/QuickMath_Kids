@@ -145,8 +145,9 @@ class _ResultScreenState extends State<ResultScreen>
   }
 
   Future<void> _saveQuiz() async {
-    if (_quizTitle == null || widget.operation == null || widget.range == null)
+    if (_quizTitle == null || widget.operation == null || widget.range == null) {
       return;
+    }
 
     try {
       await QuizHistoryService.saveQuiz(

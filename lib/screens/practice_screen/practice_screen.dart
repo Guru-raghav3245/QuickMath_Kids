@@ -47,9 +47,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
   List<bool> answeredCorrectly = [];
   List<Map<String, dynamic>> _wrongQuestions = [];
   List<String> _wrongQuestionsToShowThisSession = [];
-  List<String> _shownWrongQuestionsThisSession = [];
-  List<String> _answeredQuestionsThisSession = [];
-  List<String> _wrongQuestionsThisSession = [];
+  final List<String> _shownWrongQuestionsThisSession = [];
+  final List<String> _answeredQuestionsThisSession = [];
+  final List<String> _wrongQuestionsThisSession = [];
   bool _isInitialized = false;
   bool _isWrongAnswerQuestion = false;
   bool _isProcessingAnswer = false;
@@ -863,15 +863,15 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                         ? theme.colorScheme.primary
                                         : theme.colorScheme.surface
                                             .withOpacity(0.7),
+                                    tooltip: billingService.isPremium
+                                        ? 'Pause Quiz'
+                                        : 'Premium feature',
                                     child: Icon(
                                       Icons.pause,
                                       color: billingService.isPremium
                                           ? Colors.white
                                           : Colors.grey,
                                     ),
-                                    tooltip: billingService.isPremium
-                                        ? 'Pause Quiz'
-                                        : 'Premium feature',
                                   );
                                 },
                               ),

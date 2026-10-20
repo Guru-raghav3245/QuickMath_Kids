@@ -749,10 +749,14 @@ class _RangeGridSheet extends StatelessWidget {
     // Check for Multiplication/Division specifics which don't have Mixed
     if (name.contains('multiplication') &&
         name.contains('X') &&
-        !name.contains('Mixed')) return true;
+        !name.contains('Mixed')) {
+      return true;
+    }
     if (name.contains('division') &&
         name.contains('By') &&
-        !name.contains('Mixed')) return true;
+        !name.contains('Mixed')) {
+      return true;
+    }
 
     return false;
   }

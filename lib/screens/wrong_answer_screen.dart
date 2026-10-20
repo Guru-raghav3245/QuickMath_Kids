@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../question_logic/wrong_answer_service.dart';
 
 class WrongAnswersScreen extends StatefulWidget {
-  const WrongAnswersScreen({Key? key}) : super(key: key);
+  const WrongAnswersScreen({super.key});
 
   @override
   State<WrongAnswersScreen> createState() => _WrongAnswersScreenState();

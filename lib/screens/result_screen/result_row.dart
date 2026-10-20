@@ -11,8 +11,8 @@ class ResultRowWidget extends StatelessWidget {
     required this.label,
     required this.value,
     required this.theme,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

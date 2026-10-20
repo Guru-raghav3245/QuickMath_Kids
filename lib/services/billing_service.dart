@@ -277,6 +277,7 @@ class BillingService extends ChangeNotifier {
         .showSnackBar(SnackBar(content: Text(message)));
   }
 
+  @override
   void dispose() {
     _subscription?.cancel();
     super.dispose();
