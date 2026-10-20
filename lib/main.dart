@@ -8,16 +8,11 @@ import 'package:quickmath_kids/services/billing_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  final container = ProviderContainer();
-  container.read(billingServiceProvider);
-
-  SystemChrome.setPreferredOrientations([
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]).then((_) {
-    runApp(UncontrolledProviderScope(container: container, child: MyApp()));
-  });
+  ]);
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class SplashScreen extends ConsumerStatefulWidget {

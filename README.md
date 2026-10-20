@@ -11,7 +11,7 @@ An interactive math practice app designed to make learning fun and engaging for 
 - **Focus on Skill Development**: Improves calculation speed, math fluency, and listening comprehension.
 
 ## Features
-  Operation Selection: Choose from addition, subtraction, multiplication, or division on the home screen.
+  Operation Selection: Choose from addition, subtraction, multiplication, division, LCM, or GCF at beginner, intermediate, or advanced level.
   
   Range Customization: Select difficulty ranges (e.g., "Up to +5", "Up to +10") to suit the child’s level.
   
@@ -26,7 +26,7 @@ An interactive math practice app designed to make learning fun and engaging for 
   ### Practice Mode:
     * Unlimited questions based on selected parameters.
     * Pause or quit sessions anytime.
-    * Tracks wrong answers for review.
+    * Tracks wrong answers for review; missed questions are replayed first in the next session for the same operation and range.
     
   ### Wrong Answers History:
     * View incorrect answers with details (question, user answer, correct answer, times corrected).
@@ -48,6 +48,9 @@ An interactive math practice app designed to make learning fun and engaging for 
     * "How to Use" screen with step-by-step instructions.
     * Searchable FAQ section.
     
+  ### Daily Reminders:
+    * Schedule a daily practice reminder notification.
+
   Dark Mode: Toggle between light and dark themes.
   
   Offline Functionality: Works fully without internet.
@@ -104,7 +107,6 @@ The Free Plan is great for casual practice, while the Premium Plan provides unli
 
 - Multi-language support.
 - Rewards/badges system for motivation.
-- Historical quiz tracking.
 
 ## Feedback & Support
 

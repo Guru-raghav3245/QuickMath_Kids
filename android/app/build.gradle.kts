@@ -66,14 +66,14 @@ android {
 
 // Remove Flutter-generated plugin registrant that fails to compile with
 // package_info_plus and share_plus (v2 embedding handles registration).
-tasks.named("preBuild") {
+/* tasks.named("preBuild") {
     doLast {
         val registrantFile = file("src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java")
         if (registrantFile.exists()) {
             registrantFile.delete()
         }
     }
-}
+} */
 
 flutter {
     source = "../.."
