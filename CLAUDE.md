@@ -49,3 +49,7 @@ State management is Riverpod (`flutter_riverpod` v3, with `StateProvider` / `Sta
 - `lib/services/` — `billing_service.dart` (singleton `ChangeNotifier` over `in_app_purchase`; premium flag cached in `flutter_secure_storage`), `settings_service.dart` (TTS providers), `quiz_history_service.dart`.
 - Persistence is local only. `shared_preferences` holds JSON string lists under `quiz_history` and `wrong_questions`, plus `daily_quizzes`; the premium flag is in secure storage.
 - `lib/app_theme.dart` — dark-mode provider and theme builder; the theme also depends on premium status.
+
+## Git
+
+Do not add a `Co-Authored-By: Claude` trailer (or any Claude attribution line) to commit messages or PR descriptions.
