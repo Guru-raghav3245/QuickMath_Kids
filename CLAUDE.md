@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Product
 
-QuickMath Kids is an Android-only Flutter app (package `quickmath_kids`, applicationId `com.guru.oral_app_new`, live on Google Play) for audio-based mental-math practice, aimed at children aged 6-12. Questions are read aloud via text-to-speech; the child picks an answer from multiple-choice buttons. It works fully offline and collects no personal data. English only (multi-language, badges/rewards are planned, not built).
+QuickMath Kids is a Flutter app (package `quickmath_kids`, applicationId/bundle ID `com.guru.oral_app_new`, live on Google Play; an iOS/iPadOS port is in progress on the `ios-port` branch, see `docs/IOS_IPADOS_SPEC.md`) for audio-based mental-math practice, aimed at children aged 6-12. Questions are read aloud via text-to-speech; the child picks an answer from multiple-choice buttons. It works fully offline and collects no personal data. English only (multi-language, badges/rewards are planned, not built).
 
 ### Features
 
@@ -24,6 +24,8 @@ QuickMath Kids is an Android-only Flutter app (package `quickmath_kids`, applica
 | Ranges | Basic ones; ranges in `_paidRanges` (`dropdowns/dropdown_widgets.dart`) show a premium snackbar | All, including mixed/advanced and LCM/GCF |
 | Quiz history, wrong-answer history, settings, pause | Locked (drawer items route to `PurchaseScreen`) | Available |
 
+**iOS billing:** purchase and verification run on iOS through the same StoreKit path (no `Platform.isAndroid` guards). `restorePurchase()` is a no-op on iOS unless `userInitiated: true` (only the Restore Purchases button passes it), because iOS restore prompts for the Apple ID; the launch-time store check is skipped on iOS and the cached flag is trusted. The Redeem Promo Code UI (Google Play codes) is Android-only. To test purchases in the simulator, launch from Xcode (`ios/Runner.xcworkspace`); the `Runner` scheme uses `ios/Products.storekit` (local `premium_plan` product), which `flutter run` does not apply.
+
 Premium UI also changes the theme accent (amber). Gating is spread across `start_screen.dart`, `drawer.dart`, `dropdown_widgets.dart`, `practice_screen.dart`, `app_theme.dart` and `purchase_screen.dart`, all reading `billingServiceProvider`. A new gated feature has to be checked in each of the places that apply.
 
 ## Commands
@@ -33,6 +35,7 @@ Premium UI also changes the theme accent (amber). Gating is spread across `start
 - `flutter analyze` — lint (`flutter_lints`; `deprecated_member_use` and `unused_local_variable` are ignored in `analysis_options.yaml`; currently ~49 infos, no errors/warnings)
 - `flutter test` / `flutter test test/widget_test.dart` — `test/widget_test.dart` is the unmodified counter template with its `MyApp` import commented out; there is effectively no test coverage.
 - `dart run flutter_launcher_icons` / `dart run flutter_native_splash:create` — regenerate icons/splash after editing their config in `pubspec.yaml`
+- `flutter build ios --simulator --debug` — iOS simulator build (deployment target 15.0, UIScene + Swift Package Manager migrated by Flutter). Simulators are managed in Device Hub (Xcode 27 has no standalone Simulator.app); install with `xcrun simctl install <udid> build/ios/iphonesimulator/Runner.app`.
 - `flutter build appbundle --release` — Play Store build. Version is in `pubspec.yaml` (`version: x.y.z+build`); the build number is the Play version code and must exceed the last upload.
 
 Release signing reads the gitignored `android/key.properties`. Its `storeFile` is an absolute path to the gitignored `android/upload-keystore.jks`, so update it when building on a different machine. `android2/` is a stray secondary Android project; the real one is `android/`. Minification is intentionally off in `android/app/build.gradle.kts`.

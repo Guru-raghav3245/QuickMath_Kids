@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +15,7 @@ class PurchaseScreen extends ConsumerStatefulWidget {
 class _PurchaseScreenState extends ConsumerState<PurchaseScreen>
     with WidgetsBindingObserver {
   bool _isPurchasing = false;
+  bool _isRestoring = false;
 
   @override
   void initState() {
@@ -33,6 +35,20 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen>
       debugPrint('PurchaseScreen: App resumed, refreshing premium status...');
       ref.read(billingServiceProvider).restorePurchase();
     }
+  }
+
+  Future<void> _restore(BuildContext context) async {
+    setState(() => _isRestoring = true);
+    final restored = await ref
+        .read(billingServiceProvider)
+        .restorePurchase(userInitiated: true);
+    if (!mounted) return;
+    setState(() => _isRestoring = false);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(restored
+          ? 'Premium restored!'
+          : 'No previous purchase found for this account.'),
+    ));
   }
 
   @override
@@ -268,29 +284,46 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen>
                                 ),
                               ),
                   ),
+                  if (!billingService.isPremium)
+                    Center(
+                      child: _isRestoring
+                          ? const CircularProgressIndicator()
+                          : TextButton(
+                              onPressed: () => _restore(context),
+                              child: Text(
+                                'Restore Purchases',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                    ),
                   const SizedBox(height: 16),
-                  Center(
-                    child: ElevatedButton.icon(
-                      onPressed: () => _showPromoDialog(context),
-                      icon:
-                          const Icon(Icons.card_giftcard, color: Colors.white),
-                      label: Text(
-                        'Redeem Promo Code',
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                  // Promo codes are Google Play redeem codes.
+                  if (defaultTargetPlatform == TargetPlatform.android)
+                    Center(
+                      child: ElevatedButton.icon(
+                        onPressed: () => _showPromoDialog(context),
+                        icon: const Icon(Icons.card_giftcard,
+                            color: Colors.white),
+                        label: Text(
+                          'Redeem Promo Code',
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.colorScheme.secondary,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                         ),
                       ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.colorScheme.secondary,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                      ),
                     ),
-                  ),
                   const SizedBox(height: 16),
                   Center(
                     child: TextButton.icon(

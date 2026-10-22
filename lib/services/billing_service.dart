@@ -1,5 +1,5 @@
+import 'package:flutter/foundation.dart';
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -27,6 +27,8 @@ class BillingService extends ChangeNotifier {
   factory BillingService() => _instance;
 
   BillingService._internal();
+
+  bool get _isIOS => defaultTargetPlatform == TargetPlatform.iOS;
 
   bool get isPremium => _isPremium;
   bool get isInitialized => _isInitialized;
@@ -59,11 +61,6 @@ class BillingService extends ChangeNotifier {
   }
 
   Future<void> _performBackgroundVerification() async {
-    if (!Platform.isAndroid) {
-      debugPrint('BillingService: This app only supports Android billing.');
-      return;
-    }
-
     final bool available;
     try {
       available = await _iap.isAvailable();
@@ -89,8 +86,8 @@ class BillingService extends ChangeNotifier {
       },
     );
 
-    // Verify actual purchase status with store
-    await _verifyPurchaseStatus();
+    // iOS restore prompts for the Apple ID, so only run it from the Restore button.
+    if (!_isIOS) await _verifyPurchaseStatus();
   }
 
   Future<void> _loadCachedStatus() async {
@@ -188,11 +185,6 @@ class BillingService extends ChangeNotifier {
   }
 
   Future<bool> purchasePremium(BuildContext context) async {
-    if (!Platform.isAndroid) {
-      _showSnackBar(context, 'Purchases are only supported on Android.');
-      return false;
-    }
-
     final bool available = await _iap.isAvailable();
     if (!available) {
       _showSnackBar(context, 'In-app purchases are not available.');
@@ -223,11 +215,13 @@ class BillingService extends ChangeNotifier {
     }
   }
 
-  Future<void> restorePurchase() async {
+  Future<bool> restorePurchase({bool userInitiated = false}) async {
+    if (_isIOS && !userInitiated) return _isPremium;
     _isReset = false;
     await _storage.write(key: _resetKey, value: 'false');
     await _verifyPurchaseStatus();
     notifyListeners();
+    return _isPremium;
   }
 
   Future<void> resetPremium() async {
