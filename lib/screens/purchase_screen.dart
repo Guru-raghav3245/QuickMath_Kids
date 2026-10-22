@@ -239,6 +239,7 @@ class _PurchaseScreenState extends ConsumerState<PurchaseScreen>
                                         .restorePurchase();
                                     final success = await billingService
                                         .purchasePremium(context);
+                                    if (!mounted) return;
                                     setState(() {
                                       _isPurchasing = false;
                                     });

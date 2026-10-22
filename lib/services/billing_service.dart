@@ -23,6 +23,7 @@ class BillingService extends ChangeNotifier {
   bool _isInitialized = false;
   bool _isReset = false;
   StreamSubscription<List<PurchaseDetails>>? _subscription;
+  Completer<PurchaseStatus>? _purchaseResult;
 
   factory BillingService() => _instance;
 
@@ -201,17 +202,31 @@ class BillingService extends ChangeNotifier {
     final ProductDetails product = response.productDetails.first;
     final PurchaseParam purchaseParam = PurchaseParam(productDetails: product);
 
+    _purchaseResult = Completer<PurchaseStatus>();
     try {
       await _iap.buyNonConsumable(purchaseParam: purchaseParam);
-      return true;
+      // buyNonConsumable only starts the flow; the outcome arrives on the stream.
+      final status = await _purchaseResult!.future;
+      if (!context.mounted) return status == PurchaseStatus.purchased;
+      if (status == PurchaseStatus.pending) {
+        _showSnackBar(context, 'Purchase is pending approval.');
+      } else if (status == PurchaseStatus.error) {
+        _showSnackBar(context, 'Purchase failed. Please try again.');
+      }
+      return status == PurchaseStatus.purchased ||
+          status == PurchaseStatus.restored;
     } catch (e) {
       if (e.toString().contains('itemAlreadyOwned')) {
         await grantPromoPremium();
         _showSnackBar(context, 'You already own Premium! Access granted.');
         return true;
       }
-      _showSnackBar(context, 'Failed to initiate purchase.');
+      if (context.mounted) {
+        _showSnackBar(context, 'Failed to initiate purchase.');
+      }
       return false;
+    } finally {
+      _purchaseResult = null;
     }
   }
 
@@ -251,19 +266,30 @@ class BillingService extends ChangeNotifier {
             debugPrint(
                 'BillingService: Premium purchased/restored successfully');
             notifyListeners();
+            _finishPurchaseFlow(purchase.status);
             break;
           case PurchaseStatus.pending:
             debugPrint('BillingService: Purchase pending');
+            _finishPurchaseFlow(purchase.status);
             break;
           case PurchaseStatus.error:
-            debugPrint('BillingService: Purchase error: ${purchase.error}');
-            break;
           case PurchaseStatus.canceled:
-            debugPrint('BillingService: Purchase canceled');
+            debugPrint(
+                'BillingService: Purchase ${purchase.status.name}: ${purchase.error}');
+            // Apple expects failed/cancelled transactions to be finished too.
+            if (purchase.pendingCompletePurchase) {
+              _iap.completePurchase(purchase);
+            }
+            _finishPurchaseFlow(purchase.status);
             break;
         }
       }
     }
+  }
+
+  void _finishPurchaseFlow(PurchaseStatus status) {
+    final result = _purchaseResult;
+    if (result != null && !result.isCompleted) result.complete(status);
   }
 
   void _showSnackBar(BuildContext context, String message) {
