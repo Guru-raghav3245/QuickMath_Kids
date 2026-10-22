@@ -15,6 +15,16 @@ Status: proposed. Scope: technical changes only (code, project config, build). S
 - `main.dart` locks orientation to portrait; `Info.plist` allows landscape on both device types (the two disagree).
 - Little responsive layout exists, so a phone layout will stretch on iPad.
 
+## 2a. Progress (branch `ios-port`)
+
+| Item | Status |
+|---|---|
+| X1, X3, X8 (display name, deployment target 15.0, pods) | Done; simulator build runs on iPad Pro 13" and iPhone 18 Pro |
+| B1 (remove Android-only guards), B3 (Restore button), B5 (hide promo UI), B8 (`ios/Products.storekit` + scheme reference) | Code done |
+| B4 (finish failed/cancelled transactions; purchase result from stream) | Code done |
+| **Billing end-to-end testing** | **NOT completed.** First attempt on the simulator showed "Product not found". Likely causes: the app was not launched from Xcode, so `ios/Products.storekit` was not applied, or the scheme's `StoreKitConfigurationFileReference` path (`../../Products.storekit`) did not resolve. Unverified. Retry from Xcode; if it still fails, set the file manually under Product ▸ Scheme ▸ Edit Scheme ▸ Run ▸ Options ▸ StoreKit Configuration. Still to verify: buy, cancel, reinstall + Restore (B6). |
+| 3.5 TTS (iOS audio session, rate/pitch mapping) | Code done; not yet verified by ear with the silent switch on |
+
 ## 3. Work items
 
 Priority: **P0** is required to ship, **P1** is expected by App Review or users, **P2** is nice to have.
